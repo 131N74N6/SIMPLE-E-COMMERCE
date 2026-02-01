@@ -1,0 +1,167 @@
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import useAuth from "./useAuth";
+import { useState } from "react";
+
+export type ChangeDataIntrf<U> = {
+    api_url: string;
+    data: Partial<Omit<U, '_id'>>;
+}
+
+export type GetDataIntrf = {
+    api_url: string;
+    query_key: string[];
+    stale_time: number;
+}
+
+export type InfiniteScrollIntrf = {
+    api_url: string;
+    limit: number;
+    query_key: string[];
+    stale_time: number;
+}
+
+export type InputDataIntrf<Y> = {
+    api_url: string;
+    data: Omit<Y, '_id'>;
+}
+
+export function DataController() {
+    const { loading, user } = useAuth();
+    const token = user ? user.token : null;
+    const [message, setMessage] = useState<string | null>(null);
+    
+    async function deleteData(api_url: string) {
+        const request = await fetch(api_url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            method: 'DELETE'
+        });
+
+        const response = await request.json();
+
+        if (!request.ok) {
+            setMessage(response.message);
+            return;
+        }
+
+        return response;
+    }
+
+    async function getData<BIN1999>(props: GetDataIntrf) {
+        const { data, error, isLoading } = useQuery<BIN1999, Error>({
+            enabled: !!token && !loading,
+            queryFn: async () => {
+                const request = await fetch(props.api_url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'GET'
+                });
+
+                const response = await request.json();
+
+                if (!request.ok) {
+                    setMessage(response.message);
+                    return;
+                }
+
+                return response;
+            },
+            queryKey: props.query_key,
+            refetchOnMount: true,
+            refetchOnReconnect: true,
+            refetchOnWindowFocus: false,
+            staleTime: props.stale_time
+        });
+
+        return { data, error, isLoading }
+    }
+
+    function infiniteScroll<BIN1999>(props: InfiniteScrollIntrf) {
+        async function fetchData({ pageParam = 1 }: { pageParam?: number }) {
+            const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                method: 'GET'
+            });
+            
+            const response = await request.json();
+
+            if (!request.ok) {
+                setMessage(response.message);
+                return;
+            }
+
+            return response;
+        }
+
+        const { 
+            data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading 
+        } = useInfiniteQuery({
+            enabled: !!token && !loading,
+            getNextPageParam: (lastPage, allPages) => {
+                if (lastPage.length < props.limit) return;
+                return allPages.length + 1;
+            },
+            initialPageParam: 1,
+            queryFn: fetchData,
+            queryKey: props.query_key,
+            refetchOnMount: true,
+            refetchOnReconnect: true,
+            refetchOnWindowFocus: false
+        });
+
+        const paginatedData: BIN1999[] = data ? data.pages.flat() : [];
+        const isReachedEnd = !hasNextPage;
+        const isLoadMore = isFetchingNextPage;
+
+        return { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData }
+    }
+
+    async function insertData<BIN1999>(props: InputDataIntrf<BIN1999>) {
+        const request = await fetch(props.api_url, {
+            body: JSON.stringify(props.data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            method: 'POST',
+        });
+
+        const response = await request.json();
+
+        if (!request.ok) {
+            setMessage(response.message);
+            return;
+        }
+
+        return response;
+    }
+
+    async function updateData<BIN1999>(props: ChangeDataIntrf<BIN1999>) {
+        const request = await fetch(props.api_url, {
+            body: JSON.stringify(props.data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            method: 'PUT',
+        });
+
+        const response = await request.json();
+
+        if (!request.ok) {
+            setMessage(response.message);
+            return;
+        }
+
+        return response;
+    }
+    
+    return { deleteData, getData, infiniteScroll, insertData, message, updateData }
+}
