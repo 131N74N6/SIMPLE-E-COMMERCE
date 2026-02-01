@@ -1,0 +1,93 @@
+import { Request, Response } from 'express';
+import { Cart } from '../models/cart.model';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+export async function getSearchedProducts(req: Request, res: Response): Promise<void> {
+    try {
+        const { searched } = req.query;
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 20;
+        const skip = (page - 1) * limit;
+        
+        if (!searched || typeof searched !== 'string') {
+            res.status(400).json({ message: 'Search query is required' });
+            return;
+        }
+
+        if (isNaN(page) || page < 1) {
+            res.status(400).json({ message: 'Invalid page parameter' });
+            return;
+        }
+
+        if (isNaN(limit) || limit < 1 || limit > 12) {
+            res.status(400).json({ message: 'Invalid limit parameter' });
+            return;
+        }
+
+        const searchedPost = await Cart.find(
+            { product_name: { $regex: new RegExp(searched, 'i') } },
+            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1 }
+        ).limit(limit).skip(skip);
+        
+        res.json(searchedPost);
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function getUserProducts(req: Request, res: Response): Promise<void> {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 20;
+        const skip = (page - 1) * limit;
+
+        const signedInUserProducts = await Cart.find(
+            { user_id: req.params.user_id }, 
+            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1 }
+        ).limit(limit).skip(skip);
+
+        res.json(signedInUserProducts);
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function getUserTotalProducts(req: Request, res: Response): Promise<void> {
+    try {
+        const getUserId = req.params.user_id;
+        const totalPost = await Cart.find({ user_id: getUserId }).countDocuments();
+        res.json(totalPost);
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function insertNewProduct(req: Request, res: Response): Promise<void> {
+    try {
+        const newPost = new Cart(req.body);
+        await newPost.save();
+        res.status(200).json({ message: 'new product added' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function deleteAllProducts(req: Request, res: Response): Promise<void> {
+    try {
+        Cart.deleteMany({ user_id: req.params.user_id });
+        res.status(200).json({ message: 'all products in cart successfuly deleted' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function deleteOneProduct(req: Request, res: Response): Promise<void> {
+    try {
+        Cart.deleteOne({ _id : req.params._id });
+        res.status(200).json({ message: 'products in cart successfuly deleted' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
