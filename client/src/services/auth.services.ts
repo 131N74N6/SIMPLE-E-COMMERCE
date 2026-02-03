@@ -112,5 +112,5 @@ export default function useAuth() {
         }
     }
 
-    return { user, loading, error, signUp, signIn, signOut };
+    return { user, loading, error, setError, signUp, signIn, signOut };
 }

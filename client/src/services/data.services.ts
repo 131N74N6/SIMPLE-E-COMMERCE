@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import useAuth from "./useAuth";
+import useAuth from "./auth.services";
 import { useState } from "react";
 
 export type ChangeDataIntrf<U> = {

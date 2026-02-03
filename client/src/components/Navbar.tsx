@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { DoorOpen, Home, Search, UserCircle2, ShoppingCart, ShoppingBag, Plus } from 'lucide-react';
-import useAuth from "../services/useAuth";
+import useAuth from "../services/auth.services";
 
 export function Navbar1() {
     const { user, signOut } = useAuth();
     
     return (
-        <nav className="bg-blue-900/20 backdrop-blur-lg rounded-xl border-blue-400 md:w-1/4 md:flex shrink-0 hidden flex-col gap-5 p-4">
+        <nav className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 md:w-1/4 md:flex shrink-0 hidden flex-col gap-5 p-4">
             <Link to={'/home'} className="outline-0 text-blue-400 flex items-center gap-2 font-[550] text-[1.2rem]">
                 <Home></Home>
                 <span>Home</span>
@@ -44,7 +44,7 @@ export function Navbar2() {
     const { signOut, user } = useAuth();
 
     return (
-        <nav className="md:hidden flex justify-center gap-4 shrink-0 bg-blue-900/20 backdrop-blur-lg rounded-xl border-blue-400 p-4">
+        <nav className="md:hidden flex justify-center gap-4 shrink-0 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 p-4">
             <Link to={'/home'} className="text-blue-400 font-medium text-4">
                 <Home></Home>
             </Link>
