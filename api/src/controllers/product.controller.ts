@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import { v2 } from 'cloudinary';
 import { Review } from '../models/review.model';
 import { Cart } from '../models/cart.model';
-import { History } from '../models/history.model';
+import { PurchaseHistory } from '../models/purchase_history.model';
+import { SaleHistory } from '../models/sale_history.model';
 
 dotenv.config();
 
@@ -73,7 +74,7 @@ export async function getUserProducts(req: Request, res: Response): Promise<void
         const signedInUserProducts = await Product.find(
             { user_id: req.params.user_id }, 
             { _id: 1, product_name: 1, product_images: 1, product_price: 1, user_id: 1 }
-        ).limit(limit).skip(skip);
+        ).limit(limit).skip(skip).sort({ created_at: -1 });
 
         res.json(signedInUserProducts);
     } catch (error) {
@@ -104,7 +105,7 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
     try {
         const newPost = new Product(req.body);
         await newPost.save();
-        res.status(200).json({ message: 'new product added' });
+        res.status(200).json({ message: 'Product berhasil ditambahkan' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }
@@ -112,7 +113,7 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
 
 export async function deleteAllProducts(req: Request, res: Response): Promise<void> {
     try {
-        const signedUserId = req.params._id;
+        const signedUserId = req.params.user_id;
         const signedUserProduct = await Product.find({ user_id: signedUserId });
         const gatherPublicIds: string[] = [];
 
@@ -130,12 +131,13 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
 
         await Promise.all([
             Product.deleteMany({ user_id: signedUserId }),
-            Review.deleteMany({ product_owner_id: signedUserProduct }),
-            Cart.deleteMany({ product_owner_id: signedUserProduct }),
-            History.deleteMany({ product_owner_id: signedUserProduct })
+            Review.deleteMany({ seller_id: signedUserProduct }),
+            Cart.deleteMany({ seller_id: signedUserProduct }),
+            PurchaseHistory.deleteMany({ 'product_list.seller_id': signedUserProduct }),
+            SaleHistory.deleteMany({ seller_id: signedUserId })
         ]);
         
-        res.status(201).json({ message: 'all post deleted' });
+        res.status(201).json({ message: 'semua produk berhasil dihapus' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }
@@ -147,7 +149,7 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
         const selectedProduct = await Product.findById(getProductId);
 
         if (!selectedProduct) {
-            res.status(404).json({ message: 'Post not found.' });
+            res.status(404).json({ message: 'Produk tidak ditemukan.' });
             return;
         }
 
@@ -162,10 +164,11 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
             Product.deleteOne({ _id: getProductId }),
             Review.deleteMany({ product_id: getProductId }),
             Cart.deleteMany({ product_id: getProductId }),
-            History.deleteMany({ product_id: getProductId })
+            PurchaseHistory.deleteMany({ 'product_list.product_id': getProductId }),
+            SaleHistory.deleteMany({ 'product_list.product_id': getProductId })
         ]);
 
-        res.status(200).json({ message: 'post deleted successfully' });
+        res.status(200).json({ message: 'product berhasil dihapus' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

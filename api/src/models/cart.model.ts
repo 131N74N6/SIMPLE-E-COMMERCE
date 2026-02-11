@@ -8,7 +8,7 @@ export type CartIntrf = {
     product_total: number;
     user_id: Types.ObjectId;
     product_id: Types.ObjectId;
-    product_owner_id: Types.ObjectId;
+    seller_id: Types.ObjectId;
 }
 
 const productSchema = new Schema<CartIntrf>({
@@ -19,7 +19,7 @@ const productSchema = new Schema<CartIntrf>({
     product_total: { type: Number, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true },
     product_id: { type: Schema.Types.ObjectId, required: true },
-    product_owner_id: { type: Schema.Types.ObjectId, required: true }
+    seller_id: { type: Schema.Types.ObjectId, required: true }
 });
 
 export const Cart = mongoose.model<CartIntrf>('cart', productSchema, 'cart');

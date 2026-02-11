@@ -4,7 +4,7 @@ import { deleteAllProducts, deleteOneProduct, getSearchedProducts, getUserProduc
 const cartRouters = Router();
 
 cartRouters.delete('/delete/:product_id', deleteOneProduct);
-cartRouters.delete('/deletes', deleteAllProducts);
+cartRouters.delete('/deletes/:user_id', deleteAllProducts);
 cartRouters.get('/:user_id', getUserProducts);
 cartRouters.get('/total/:user_id', getUserTotalProducts);
 cartRouters.get('/searched', getSearchedProducts);

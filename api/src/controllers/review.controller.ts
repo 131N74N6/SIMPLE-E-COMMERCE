@@ -12,8 +12,8 @@ export async function getProductReview(req: Request, res: Response) {
 
         const productReviews = await Review.find(
             { product_id: req.params.product_id },
-            { created_at: 1, product_review: 1, username: 1 }
-        ).limit(limit).skip(skip);
+            { created_at: 1, product_review: 1, customer_name: 1, customer_id: 1 }
+        ).limit(limit).skip(skip).sort({ created_at: -1 });
 
         res.json(productReviews)
     } catch (error) {

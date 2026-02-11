@@ -8,7 +8,7 @@ import {
 const productRouters = Router();
 
 productRouters.delete('/delete/:_id', deleteOneProduct);
-productRouters.delete('/deletes', deleteAllProducts);
+productRouters.delete('/deletes/:user_id', deleteAllProducts);
 productRouters.get('/', getAllProducts);
 productRouters.get('/:user_id', getUserProducts);
 productRouters.get('/total/:user_id', getUserTotalProducts);
