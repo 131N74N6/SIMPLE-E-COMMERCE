@@ -1,10 +1,24 @@
 import { Navbar1, Navbar2 } from "../components/Navbar"
+import type { CustomerProductIntrf } from "../components/ProductCard";
+import { CustomerProductList } from "../components/ProductList";
+import { DataController } from "../services/data.services";
 
 export default function Home() {
+    const { infiniteScroll } = DataController();
+
+    const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CustomerProductIntrf>({
+        api_url: 'http://localhost:1234/products',
+        query_key: ['all-products'],
+        limit: 20,
+        stale_time: 600000,
+    });
+
     return (
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
-            <div className="h-full bg-blue-900/20 backdrop-blur-lg rounded-xl p-8 border border-blue-400 shadow-lg md:w-3/4 w-full"></div>
+            <div className="h-full bg-blue-900/20 backdrop-blur-lg rounded-xl p-8 border border-blue-400 shadow-lg md:w-3/4 w-full">
+                <CustomerProductList data={paginatedData} loadMore={isLoadMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage}/>
+            </div>
             <Navbar2/>
         </div>
     );

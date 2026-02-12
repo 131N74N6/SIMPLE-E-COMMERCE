@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react';
-import type { User } from './custom-types';
 import { useNavigate } from 'react-router-dom';
+
+export type User = {
+    status: string;
+    token: string;
+    info: {
+        id: string;
+        email: string;
+        username: string;
+    }
+}
 
 export default function useAuth() {
     const [user, setUser] = useState<User | null>(null);

@@ -1,7 +1,134 @@
-export default function ProductList() {
+import type { FetchNextPageOptions, InfiniteData, InfiniteQueryObserverResult } from "@tanstack/react-query";
+import type { CartProductIntrf, CustomerProductIntrf, SellerProductIntrf } from "./ProductCard";
+import { ProductCardInCart, CustomerProductCard, SellerProductCard } from "./ProductCard";
+import Loading from "./Loading";
+
+export type SellerListIntrf = {
+    data: SellerProductIntrf[];
+    isReachedEnd: boolean;
+    loadMore: boolean;
+    setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
+}
+
+export type CustomerListIntrf = {
+    data: CustomerProductIntrf[];
+    isReachedEnd: boolean;
+    loadMore: boolean;
+    setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
+}
+
+export type CartListIntrf = {
+    data: CartProductIntrf[];
+    isReachedEnd: boolean;
+    loadMore: boolean;
+    setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
+}
+
+export function SellerProductList(props: SellerListIntrf) {
+    if (props.data.length === 0) {
+        return (
+            <div className="flex flex-col gap-4 justify-center items-center h-full">
+                <p className="text-white">No products available</p>
+            </div>
+        );
+    }
+
     return (
-        <div>
+        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
+            <div className="flex flex-col gap-4">
+                {props.data.map((product) => (
+                    <SellerProductCard key={product._id} {...product}/>
+                ))}
+            </div>
+            <div className="flex justify-center">
+                {props.loadMore ? <div className="flex justify-center"><Loading/></div> : null}
+                {!props.isReachedEnd ? (
+                    <button 
+                        type="button"
+                        onClick={() => props.setSize()}
+                        className="bg-purple-400 text-gray-800 w-30 rounded font-medium cursor-pointer p-[0.4rem] text-[0.9rem]"
+                    >
+                        Load More
+                    </button>
+                ) : props.data.length < 12 ? (
+                    <></> 
+                ) : (
+                    <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
+                )}
+            </div>
+        </section>
         
-        </div>
+    );
+}
+
+export function CustomerProductList(props: CustomerListIntrf) {
+    if (props.data.length === 0) {
+        return (
+            <div className="flex flex-col gap-4 justify-center items-center h-full">
+                <p className="text-white">No products available</p>
+            </div>
+        );
+    }
+
+    return (
+        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
+            <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+                {props.data.map((product) => (
+                    <CustomerProductCard key={product._id} {...product}/>
+                ))}
+            </div>
+            <div className="flex justify-center">
+                {props.loadMore ? <div className="flex justify-center"><Loading/></div> : null}
+                {!props.isReachedEnd ? (
+                    <button 
+                        type="button"
+                        onClick={() => props.setSize()}
+                        className="bg-purple-400 text-gray-800 w-30 rounded font-medium cursor-pointer p-[0.4rem] text-[0.9rem]"
+                    >
+                        Load More
+                    </button>
+                ) : props.data.length < 12 ? (
+                    <></> 
+                ) : (
+                    <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
+                )}
+            </div>
+        </section>
+    );
+}
+
+export function CartProductList(props: CartListIntrf) {
+    if (props.data.length === 0) {
+        return (
+            <div className="flex flex-col gap-4 justify-center items-center h-full">
+                <p className="text-white">No products available</p>
+            </div>
+        );
+    }
+
+    return (
+        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
+            <div className="flex flex-col gap-4">
+                {props.data.map((product) => (
+                    <ProductCardInCart key={product._id} {...product}/>
+                ))}
+            </div>
+            <div className="flex justify-center">
+                {props.loadMore ? <div className="flex justify-center"><Loading/></div> : null}
+                {!props.isReachedEnd ? (
+                    <button 
+                        type="button"
+                        onClick={() => props.setSize()}
+                        className="bg-purple-400 text-gray-800 w-30 rounded font-medium cursor-pointer p-[0.4rem] text-[0.9rem]"
+                    >
+                        Load More
+                    </button>
+                ) : props.data.length < 12 ? (
+                    <></> 
+                ) : (
+                    <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
+                )}
+            </div>
+        </section>
     );
 }

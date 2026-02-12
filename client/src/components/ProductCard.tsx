@@ -1,43 +1,90 @@
-export type ProductDataIntrf = {
+export type SellerProductIntrf = {
+    _id: string;
+    created_at: string;
     product_images: { 
         file_url: string;
         public_id: string;
     }[];
     product_name: string;
     product_price: number;
+    onDelete: (_id: string) => void;
+    onEdit: () => void;
+    user_id: string;
 }
 
-export function ProductCard(props: ProductDataIntrf) {
+export type CustomerProductIntrf = {
+    _id: string;
+    created_at: string;
+    product_images: { 
+        file_url: string;
+        public_id: string;
+    }[];
+    product_name: string;
+    product_price: number;
+    onAddToCart: (_id: string) => void;
+    user_id: string;
+}
+
+export type CartProductIntrf = {
+    _id: string;
+    created_at: string;
+    product_images: { 
+        file_url: string;
+        public_id: string;
+    }[];
+    product_name: string;
+    product_price: number;
+    onRemove: (_id: string) => void;
+    user_id: string;
+}
+
+export function SellerProductCard(props: SellerProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
-            <img src={props.product_images[0].file_url}/>
-            <h3>{props.product_name}</h3>
-            <p>{props.product_price}</p>
-            <button>Buy</button>
+            <div className="rounded-lg relative aspect-square">
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
+            </div>
+            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <div className="flex gap-4">
+                <button className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Edit</button>
+                <button className="bg-blue-200 text-blue-900 text-[0.9rem] p-[0.45rem] cursor-pointer">Delete</button>
+            </div>
         </div>
     );
 }
 
-export function ProductList(props: ProductDataIntrf) {
+export function CustomerProductCard(props: CustomerProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
-            <img src={props.product_images[0].file_url}/>
-            <h3>{props.product_name}</h3>
-            <p>{props.product_price}</p>
-            <button>Remove</button>
-            <button>Edit</button>
+            <div className="rounded-lg relative aspect-square">
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
+            </div>
+            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <div className="flex gap-4">
+                <button className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Add to Cart</button>
+            </div>
         </div>
     );
 }
 
-export function ProductCardInCart(props: ProductDataIntrf) {
+export function ProductCardInCart(props: CartProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
-            <img src={props.product_images[0].file_url}/>
-            <h3>{props.product_name}</h3>
-            <p>{props.product_price}</p>
-            <button>Buy</button>
-            <button>Remove</button>
+            <div className="rounded-lg relative aspect-square">
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-full rounded-lg"/>
+            </div>
+            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <div className="flex gap-4">
+                <button 
+                    className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer" 
+                    onClick={() => props.onRemove(props._id)}
+                >
+                    Remove
+                </button>
+            </div>
         </div>
     );
 }
