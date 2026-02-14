@@ -88,7 +88,7 @@ export default function SignUp() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full mt-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition"
+                        className="w-full mt-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer"
                     >
                         Daftar
                     </button>

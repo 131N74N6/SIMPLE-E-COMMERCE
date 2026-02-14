@@ -8,6 +8,7 @@ import authRouters from "./routes/auth.router";
 import cartRouters from "./routes/cart.router";
 import purchaseHistoryRouters from "./routes/purchase_history.router";
 import saleHistoryRouters from "./routes/sale_history.router";
+import paymentRouters from "./routes/payment.router";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use('/auth', authRateLimiter, authRouters);
 app.use('/cart', cartRouters)
 app.use('/product', productRouters);
+app.use('/payment', paymentRouters);
 app.use('/review', reviewRouters);
 app.use('/purchase-history', purchaseHistoryRouters);
 app.use('/sale-history', saleHistoryRouters);

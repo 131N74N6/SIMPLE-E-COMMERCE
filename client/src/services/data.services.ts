@@ -25,6 +25,17 @@ export type InputDataIntrf<Y> = {
     data: Omit<Y, '_id'>;
 }
 
+export  type TransactionIntrf = {
+    _id: string;
+    customer_id: string;
+    customer_name: string;
+    seller_name: string;
+    seller_id: string;
+    product_list: string;
+    total_quantity: number;
+    total_price: number;
+}
+
 export function DataController() {
     const { loading, user } = useAuth();
     const token = user ? user.token : null;
@@ -104,16 +115,17 @@ export function DataController() {
             data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading 
         } = useInfiniteQuery({
             enabled: !!token && !loading,
+            initialPageParam: 1,
+            queryKey: props.query_key,
+            queryFn: fetchData,
             getNextPageParam: (lastPage, allPages) => {
                 if (lastPage.length < props.limit) return;
                 return allPages.length + 1;
             },
-            initialPageParam: 1,
-            queryFn: fetchData,
-            queryKey: props.query_key,
             refetchOnMount: true,
             refetchOnReconnect: true,
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: false,
+            staleTime: props.stale_time,
         });
 
         const paginatedData: BIN1999[] = data ? data.pages.flat() : [];
@@ -162,6 +174,23 @@ export function DataController() {
 
         return response;
     }
+
+    async function createTransaction(props: TransactionIntrf) {
+        const request = await fetch('http://localhost:1234/payment/create-transaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(props),
+        });
     
-    return { deleteData, getData, infiniteScroll, insertData, message, updateData }
+        const response = await request.json();
+
+        if (!request.ok) {
+            setMessage(response.message);
+        } else {
+            setMessage(null);
+            return response;
+        }
+    }
+    
+    return { createTransaction, deleteData, getData, infiniteScroll, insertData, message, setMessage, updateData }
 }

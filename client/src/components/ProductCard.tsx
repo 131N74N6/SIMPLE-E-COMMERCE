@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export type SellerProductIntrf = {
     _id: string;
     created_at: string;
@@ -40,13 +42,13 @@ export type CartProductIntrf = {
 
 export function SellerProductCard(props: SellerProductIntrf) {
     return (
-        <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
-            <div className="rounded-lg relative aspect-square">
+        <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex gap-4 p-4">
+            <div className="rounded-lg relative w-60 h-60">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
-            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4">
+                <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+                <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
                 <button className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Edit</button>
                 <button className="bg-blue-200 text-blue-900 text-[0.9rem] p-[0.45rem] cursor-pointer">Delete</button>
             </div>
@@ -60,10 +62,10 @@ export function CustomerProductCard(props: CustomerProductIntrf) {
             <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
-            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
             <div className="flex gap-4">
-                <button className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Add to Cart</button>
+                <Link to={`/product/${props._id}`} className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
             </div>
         </div>
     );
@@ -75,8 +77,8 @@ export function ProductCardInCart(props: CartProductIntrf) {
             <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full rounded-lg"/>
             </div>
-            <h3 className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="md:line-clamp-3 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
             <div className="flex gap-4">
                 <button 
                     className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer" 

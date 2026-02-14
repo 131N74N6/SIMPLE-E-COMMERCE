@@ -34,7 +34,7 @@ export function SellerProductList(props: SellerListIntrf) {
     }
 
     return (
-        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
+        <section className="gap-4 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-4">
                 {props.data.map((product) => (
                     <SellerProductCard key={product._id} {...product}/>
@@ -71,8 +71,8 @@ export function CustomerProductList(props: CustomerListIntrf) {
     }
 
     return (
-        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
-            <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+        <section className="flex flex-col gap-4">
+            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4 overflow-y-auto">
                 {props.data.map((product) => (
                     <CustomerProductCard key={product._id} {...product}/>
                 ))}
@@ -107,7 +107,7 @@ export function CartProductList(props: CartListIntrf) {
     }
 
     return (
-        <section className="bg-[#1a1a1a] gap-4 flex flex-col overflow-y-auto">
+        <section className="gap-4 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-4">
                 {props.data.map((product) => (
                     <ProductCardInCart key={product._id} {...product}/>

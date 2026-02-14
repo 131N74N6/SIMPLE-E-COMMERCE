@@ -58,7 +58,7 @@ export function checkOwnership(req: AuthRequest, res: Response, next: NextFuncti
         return;
     }
 
-    const requestedId = req.params.id;
+    const requestedId = req.params.user_id;
 
     if (!requestedId) {
         res.status(400).json({ message: 'Resource id parameter required' });

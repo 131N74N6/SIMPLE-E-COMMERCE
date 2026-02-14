@@ -21,6 +21,15 @@ export async function getProductReview(req: Request, res: Response) {
     }
 }
 
+export async function getTotalProductReview(req: Request, res: Response) {
+    try {
+        const totalReviews = await Review.countDocuments({ product_id: req.params.product_id });
+        res.json({ total_reviews: totalReviews });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
 export async function makeReview(req: Request, res: Response) {
     try {
         const newComment = new Review(req.body);

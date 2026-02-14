@@ -4,17 +4,18 @@ import {
     getSelectedProduct, getUserProducts, getUserTotalProducts, insertNewProduct, 
     updateProductDetail
 } from '../controllers/product.controller';
+import { checkOwnership, verifyToken } from "../middlewares/auth.middleware";
 
 const productRouters = Router();
 
-productRouters.delete('/delete/:_id', deleteOneProduct);
-productRouters.delete('/deletes/:user_id', deleteAllProducts);
-productRouters.get('/', getAllProducts);
-productRouters.get('/:user_id', getUserProducts);
-productRouters.get('/total/:user_id', getUserTotalProducts);
-productRouters.get('/searched', getSearchedProducts);
-productRouters.get('/:_id', getSelectedProduct);
-productRouters.post('/add-product', insertNewProduct);
-productRouters.put('/update/:_id', updateProductDetail);
+productRouters.delete('/delete/:_id', verifyToken, deleteOneProduct);
+productRouters.delete('/deletes/:user_id', verifyToken, checkOwnership, deleteAllProducts);
+productRouters.get('/', verifyToken, getAllProducts);
+productRouters.get('/:user_id', verifyToken, checkOwnership, getUserProducts);
+productRouters.get('/total/:user_id', verifyToken, checkOwnership, getUserTotalProducts);
+productRouters.get('/searched', verifyToken, getSearchedProducts);
+productRouters.get('/:_id', verifyToken, getSelectedProduct);
+productRouters.post('/add-product', verifyToken, insertNewProduct);
+productRouters.put('/update/:_id', verifyToken, updateProductDetail);
 
 export default productRouters;

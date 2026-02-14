@@ -5,28 +5,38 @@ import { Payment } from '../models/payment.model';
 
 let snap = new midtransClient.Snap({
     isProduction: false,
-    serverKey: process.env.MIDTRANS_SERVER_KEY,
-    clientKey: process.env.MIDTRANS_CLIENT_KEY,
+    serverKey: process.env.MIDTRANS_SERVER_KEY!,
+    clientKey: process.env.MIDTRANS_CLIENT_KEY!,
 });
 
 export async function createTransaction (req: Request, res: Response) {
-    const { customer_id, product_list, quantity } = req.body;
+    const { customer_id, customer_name, seller_name, seller_id, product_list, total_quantity, total_price } = req.body;
 
-    if (!customer_id || !product_list || !quantity) {
-        return res.status(400).json({ error: 'Missing required fields' });
+    if (!customer_id || !customer_name || !seller_name || !seller_id || !product_list || !total_quantity || !total_price) {
+        return res.status(400).json({ message: 'Missing required fields' });
     }
 
     try {
-        const order = new Order({ customer_id, product_list, quantity });
+        const order = new Order({
+            created_at: new Date().toISOString(),
+            customer_id,
+            customer_name,
+            seller_name,
+            seller_id,
+            product_list,
+            total_quantity,
+            status: 'pending',
+            total_price,
+        });
         await order.save();
 
         const parameter = {
             transaction_details: {
                 order_id: order._id.toString(),
-                gross_amount: quantity,
+                gross_amount: total_price,
             },
-            credit_card: { secure: true, },
-        }
+            credit_card: { secure: true },
+        };
 
         const transaction = await snap.createTransaction(parameter);
         const snapToken = transaction.token;
@@ -37,7 +47,7 @@ export async function createTransaction (req: Request, res: Response) {
 
         res.status(200).json({ snap_token: snapToken });
     } catch (err: any) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -48,24 +58,31 @@ export async function handleWebhook (req: Request, res: Response) {
         const orderId = notification.order_id;
         const order = await Order.findById(orderId);
 
-        if (!order) return res.status(404).json({ error: 'Order not found' });
+        if (!order) return res.status(404).json({ message: 'Order not found' });
 
+        // Update status order
         order.status = notification.transaction_status;
         await order.save();
 
+        // Simpan data pembayaran ke collection Payment
         const payment = new Payment({
+            created_at: new Date().toISOString(),
+            amount: notification.gross_amount,
+            payment_method: notification.payment_type,
+            payment_details: {
+                va_numbers: notification.va_numbers || [],
+                payment_type: notification.payment_type,
+                transaction_time: notification.transaction_time,
+                transaction_id: notification.transaction_id,
+            },
+            status: notification.transaction_status, // Bisa 'settlement', 'cancel', 'expire', dll
+            user_id: order.customer_id, // Asumsi user_id = customer_id
             order_id: order._id,
-            transaction_status: notification.transaction_status,
-            payment_type: notification.payment_type,
-            fraud_status: notification.fraud_status,
-            gross_amount: notification.gross_amount,
-            midtrans_response: notification,
         });
-
+        
         await payment.save();
-
         res.status(200).json({ message: 'Notification received' });
     } catch (err: any) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ message: err.message });
     }
 }

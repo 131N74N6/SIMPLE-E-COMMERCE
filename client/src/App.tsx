@@ -6,7 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ProtectedRoute from "./components/ProtectedRroute";
 import YourShop from "./pages/YourShop";
 import Cart from "./pages/Cart";
-import AddProduct from "./pages/AddProduct";
+import { AddProduct } from "./pages/AddProduct";
+import SearchProduct from "./pages/SearchProduct";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,7 @@ function App() {
                     <Route path="/add-product" element={<ProtectedRoute><AddProduct/></ProtectedRoute>}/>
                     <Route path="/your-shop/:user_id" element={<ProtectedRoute><YourShop/></ProtectedRoute>}/>
                     <Route path="/cart/:user_id" element={<ProtectedRoute><Cart/></ProtectedRoute>}/>
-                    <Route path="/search-product" element={<ProtectedRoute><Cart/></ProtectedRoute>}/>
+                    <Route path="/search-product" element={<ProtectedRoute><SearchProduct/></ProtectedRoute>}/>
                     <Route path="/" element={<Navigate to="/home" replace/>}/>
                     <Route path="*" element={<Navigate to="/sign-in" replace/>}/>
                 </Routes>
