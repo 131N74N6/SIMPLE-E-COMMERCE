@@ -8,6 +8,7 @@ export type SellerListIntrf = {
     isReachedEnd: boolean;
     loadMore: boolean;
     setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
+    onDelete: (_id: string) => void;
 }
 
 export type CustomerListIntrf = {
@@ -22,6 +23,7 @@ export type CartListIntrf = {
     isReachedEnd: boolean;
     loadMore: boolean;
     setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
+    onRemove: (_id: string) => void;
 }
 
 export function SellerProductList(props: SellerListIntrf) {
@@ -35,9 +37,9 @@ export function SellerProductList(props: SellerListIntrf) {
 
     return (
         <section className="gap-4 flex flex-col overflow-y-auto">
-            <div className="flex flex-col gap-4">
+            <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4 overflow-y-auto">
                 {props.data.map((product) => (
-                    <SellerProductCard key={product._id} {...product}/>
+                    <SellerProductCard key={product._id} {...product} onDelete={product.onDelete}/>
                 ))}
             </div>
             <div className="flex justify-center">
@@ -110,7 +112,7 @@ export function CartProductList(props: CartListIntrf) {
         <section className="gap-4 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-4">
                 {props.data.map((product) => (
-                    <ProductCardInCart key={product._id} {...product}/>
+                    <ProductCardInCart key={product._id} {...product} onRemove={props.onRemove}/>
                 ))}
             </div>
             <div className="flex justify-center">

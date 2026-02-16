@@ -7,7 +7,7 @@ export default function Home() {
     const { infiniteScroll } = DataController();
 
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CustomerProductIntrf>({
-        api_url: 'http://localhost:1234/product',
+        api_url: 'http://localhost:1234/product/get-all',
         query_key: ['all-products'],
         limit: 20,
         stale_time: 600000,

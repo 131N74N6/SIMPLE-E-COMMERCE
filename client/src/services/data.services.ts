@@ -25,7 +25,7 @@ export type InputDataIntrf<Y> = {
     data: Omit<Y, '_id'>;
 }
 
-export  type TransactionIntrf = {
+export type TransactionIntrf = {
     _id: string;
     customer_id: string;
     customer_name: string;
@@ -60,7 +60,7 @@ export function DataController() {
         return response;
     }
 
-    async function getData<BIN1999>(props: GetDataIntrf) {
+    function getData<BIN1999>(props: GetDataIntrf) {
         const { data, error, isLoading } = useQuery<BIN1999, Error>({
             enabled: !!token && !loading,
             queryFn: async () => {

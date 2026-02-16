@@ -93,8 +93,7 @@ export async function getSelectedProduct(req: Request, res: Response): Promise<v
 
 export async function getUserTotalProducts(req: Request, res: Response): Promise<void> {
     try {
-        const getUserId = req.params.id;
-        const totalPost = await Product.find({ user_id: getUserId }).countDocuments();
+        const totalPost = await Product.find({ user_id: req.params.user_id }).countDocuments();
         res.json(totalPost);
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
@@ -179,12 +178,14 @@ export async function updateProductDetail(req: Request, res: Response) {
         await Product.updateOne(
             { _id: req.params._id }, { 
                 $set: {
-                product_description: req.body.product_description,
-                product_name: req.body.product_name,
-                product_price: req.body.product_price,
-                product_stock: req.body.product_stock
+                    product_images: req.body.product_images,
+                    product_description: req.body.product_description,
+                    product_name: req.body.product_name,
+                    product_price: req.body.product_price,
+                    product_stock: req.body.product_stock
+                }
             }
-        });
+        );
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

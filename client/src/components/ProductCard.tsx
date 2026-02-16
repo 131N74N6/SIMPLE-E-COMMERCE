@@ -1,3 +1,4 @@
+import { Pen, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export type SellerProductIntrf = {
@@ -10,7 +11,6 @@ export type SellerProductIntrf = {
     product_name: string;
     product_price: number;
     onDelete: (_id: string) => void;
-    onEdit: () => void;
     user_id: string;
 }
 
@@ -23,7 +23,6 @@ export type CustomerProductIntrf = {
     }[];
     product_name: string;
     product_price: number;
-    onAddToCart: (_id: string) => void;
     user_id: string;
 }
 
@@ -42,15 +41,19 @@ export type CartProductIntrf = {
 
 export function SellerProductCard(props: SellerProductIntrf) {
     return (
-        <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex gap-4 p-4">
-            <div className="rounded-lg relative w-60 h-60">
+        <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
+            <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
-            <div className="flex flex-col gap-4">
-                <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-                <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
-                <button className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Edit</button>
-                <button className="bg-blue-200 text-blue-900 text-[0.9rem] p-[0.45rem] cursor-pointer">Delete</button>
+            <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
+            <div className="flex gap-4">
+                <Link to={`/edit-product/${props._id}`} className="p-[0.45rem] cursor-pointer">
+                    <Pen color="orange"/>
+                </Link>
+                <button type="button" className="p-[0.45rem] cursor-pointer" onClick={() => props.onDelete(props._id)}>
+                    <Trash color="yellow"/>
+                </button>
             </div>
         </div>
     );
@@ -63,9 +66,9 @@ export function CustomerProductCard(props: CustomerProductIntrf) {
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
             <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
             <div className="flex gap-4">
-                <Link to={`/product/${props._id}`} className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
+                <Link to={`/product-detail/${props._id}`} className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
             </div>
         </div>
     );
@@ -78,14 +81,9 @@ export function ProductCardInCart(props: CartProductIntrf) {
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full rounded-lg"/>
             </div>
             <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_price}</p>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
             <div className="flex gap-4">
-                <button 
-                    className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer" 
-                    onClick={() => props.onRemove(props._id)}
-                >
-                    Remove
-                </button>
+                <button type="button" className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer" onClick={() => props.onRemove(props._id)}>Remove</button>
             </div>
         </div>
     );

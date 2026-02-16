@@ -6,6 +6,7 @@ import useAuth from "../services/auth.services";
 import { uploadToCloudinary } from "../services/cloudinary.services";
 import type { ProductDetailIntrf } from "./ProductDetail";
 import Loading from "../components/Loading";
+import { X } from "lucide-react";
 
 export type MediaFile = {
     file: File;
@@ -22,12 +23,9 @@ export function AddProduct() {
     const { insertData, message } = DataController();
     const currentUserId = user ? user.info.id : '';
 
-    const [productName, setProductName] = useState<string>('');
+    const [product, setProduct] = useState({ product_description: '', product_name: '', product_price: '', product_stock: '' });
     const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
-    const [productPrice, setProductPrice] = useState<string>('');
     const [isUploading, setIsUploading] = useState<boolean>(false);
-    const [description, setDescription] = useState<string>('');
-    const [stock, setStock] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -36,6 +34,11 @@ export function AddProduct() {
             return () => clearTimeout(timer);
         }
     }, [error, setError]);
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = event.target;
+        setProduct({ ...product, [name]: value });
+    }
 
     function imageSelectorHandler(event: React.ChangeEvent<HTMLInputElement>) {
         const files = event.target.files;
@@ -82,27 +85,26 @@ export function AddProduct() {
                 api_url: 'http://localhost:1234/product/add-product',
                 data: {
                     created_at: currentDate,
-                    product_description: description.trim(),
+                    product_description: product.product_description.trim(),
                     product_images: productImages,
-                    product_name: productName.trim(),
-                    product_price: parseInt(productPrice),
-                    product_stock: parseInt(stock),
+                    product_name: product.product_name.trim(),
+                    product_price: parseInt(product.product_price.trim()),
+                    product_stock: parseInt(product.product_stock.trim()),
                     user_id: currentUserId
                 }
             });
         },
-        onSuccess: () => {
-            setIsUploading(false);
+        onSettled: () => {
             if (imageInputRef.current) imageInputRef.current.value = '';
-            setDescription('');
-            setProductName('');
-            setProductPrice('');
-            setStock('');
+            setIsUploading(false);
+            setProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
+            setMediaFiles([]);
+        },
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
         },
         onError: () => {
-            setIsUploading(false);
             setError(message);
         }
     });
@@ -154,9 +156,9 @@ export function AddProduct() {
                                             e.stopPropagation();
                                             removeMediaFile(index);
                                         }}
-                                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-4 w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <i className="fa-solid fa-xmark"></i>
+                                        <X size={14} color="white"/>
                                     </button>
                                 </div>
                             ))}
@@ -165,31 +167,35 @@ export function AddProduct() {
                 </section>
                 <textarea 
                     placeholder="Add description..." 
-                    value={description}
-                    onChange={(event) => setDescription(event.target.value)}
+                    name="product_description"
+                    value={product.product_description}
+                    onChange={handleInputChange}
                     className="p-[0.8rem] h-screen text-white bg-blue-900/20 backdrop-blur-lg outline-0 border border-blue-400 rounded-lg text-[0.9rem] font-[550] resize-none"
                 ></textarea>
                 <div className="grid grid-cols-3 gap-4">
                     <input 
                         type="text" 
-                        placeholder="product-name"
+                        name="product_name"
+                        placeholder="product name"
                         className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        value={productName} 
-                        onChange={(event) => setProductName(event.target.value)}
+                        value={product.product_name} 
+                        onChange={handleInputChange}
                     />
                     <input 
                         type="text" 
+                        name="product_price"
                         placeholder="product-price" 
-                        value={productPrice} 
+                        value={product.product_price} 
                         className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        onChange={(event) => setProductPrice(event.target.value)}
+                        onChange={handleInputChange}
                     />
                     <input 
                         type="text" 
+                        name="product_stock"
                         placeholder="product-stock" 
-                        value={stock} 
+                        value={product.product_stock} 
                         className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        onChange={(event) => setStock(event.target.value)}
+                        onChange={handleInputChange}
                     />
                 </div>
                 <button 
