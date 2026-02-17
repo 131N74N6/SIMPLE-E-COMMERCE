@@ -39,7 +39,7 @@ export function SellerProductList(props: SellerListIntrf) {
         <section className="gap-4 flex flex-col overflow-y-auto">
             <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4 overflow-y-auto">
                 {props.data.map((product) => (
-                    <SellerProductCard key={product._id} {...product} onDelete={product.onDelete}/>
+                    <SellerProductCard key={product._id} {...product} onDelete={props.onDelete}/>
                 ))}
             </div>
             <div className="flex justify-center">
@@ -53,7 +53,7 @@ export function SellerProductList(props: SellerListIntrf) {
                         Load More
                     </button>
                 ) : props.data.length < 12 ? (
-                    <></> 
+                    null 
                 ) : (
                     <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
                 )}
@@ -73,7 +73,7 @@ export function CustomerProductList(props: CustomerListIntrf) {
     }
 
     return (
-        <section className="flex flex-col gap-4">
+        <section className="flex flex-col gap-4 overflow-y-auto">
             <div className="grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 gap-4 overflow-y-auto">
                 {props.data.map((product) => (
                     <CustomerProductCard key={product._id} {...product}/>
@@ -90,7 +90,7 @@ export function CustomerProductList(props: CustomerListIntrf) {
                         Load More
                     </button>
                 ) : props.data.length < 12 ? (
-                    <></> 
+                    null 
                 ) : (
                     <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
                 )}
@@ -110,7 +110,7 @@ export function CartProductList(props: CartListIntrf) {
 
     return (
         <section className="gap-4 flex flex-col overflow-y-auto">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 overflow-y-auto">
                 {props.data.map((product) => (
                     <ProductCardInCart key={product._id} {...product} onRemove={props.onRemove}/>
                 ))}
@@ -126,7 +126,7 @@ export function CartProductList(props: CartListIntrf) {
                         Load More
                     </button>
                 ) : props.data.length < 12 ? (
-                    <></> 
+                    null 
                 ) : (
                     <p className="text-purple-400 font-medium text-center text-[1rem]">No More Data to Show</p>
                 )}

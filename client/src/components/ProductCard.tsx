@@ -45,8 +45,8 @@ export function SellerProductCard(props: SellerProductIntrf) {
             <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
-            <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
+            <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
             <div className="flex gap-4">
                 <Link to={`/edit-product/${props._id}`} className="p-[0.45rem] cursor-pointer">
                     <Pen color="orange"/>
@@ -65,10 +65,10 @@ export function CustomerProductCard(props: CustomerProductIntrf) {
             <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
             </div>
-            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
+            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
             <div className="flex gap-4">
-                <Link to={`/product-detail/${props._id}`} className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
+                <Link to={`/product-detail/${props._id}`} className="bg-blue-400 font-medium text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
             </div>
         </div>
     );
@@ -80,10 +80,10 @@ export function ProductCardInCart(props: CartProductIntrf) {
             <div className="rounded-lg relative aspect-square">
                 <img src={props.product_images[0].file_url} className="object-cover w-full h-full rounded-lg"/>
             </div>
-            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem]">{props.product_name}</h3>
-            <p className="line-clamp-1 text-blue-400 text-[0.9rem]">IDR {props.product_price}</p>
+            <h3 className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
+            <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
             <div className="flex gap-4">
-                <button type="button" className="bg-blue-400 text-black text-[0.9rem] p-[0.45rem] cursor-pointer" onClick={() => props.onRemove(props._id)}>Remove</button>
+                <button type="button" className="bg-blue-400 text-black font-medium text-[0.9rem] p-[0.45rem] cursor-pointer" onClick={() => props.onRemove(props._id)}>Remove</button>
             </div>
         </div>
     );

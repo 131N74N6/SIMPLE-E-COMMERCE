@@ -60,6 +60,26 @@ export function DataController() {
         return response;
     }
 
+    async function deleteChosenData(api_url: string, data: string[]) {
+        const request = await fetch(api_url, {
+            body: JSON.stringify({ publicIds: data }),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            method: 'DELETE'
+        });
+
+        const response = await request.json();
+
+        if (!request.ok) {
+            setMessage(response.message);
+            return;
+        }
+
+        return response;
+    }
+
     function getData<BIN1999>(props: GetDataIntrf) {
         const { data, error, isLoading } = useQuery<BIN1999, Error>({
             enabled: !!token && !loading,
@@ -95,8 +115,8 @@ export function DataController() {
         async function fetchData({ pageParam = 1 }: { pageParam?: number }) {
             const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 },
                 method: 'GET'
             });
@@ -139,8 +159,8 @@ export function DataController() {
         const request = await fetch(props.api_url, {
             body: JSON.stringify(props.data),
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
             method: 'POST',
         });
@@ -159,8 +179,8 @@ export function DataController() {
         const request = await fetch(props.api_url, {
             body: JSON.stringify(props.data),
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
             method: 'PUT',
         });
@@ -192,5 +212,5 @@ export function DataController() {
         }
     }
     
-    return { createTransaction, deleteData, getData, infiniteScroll, insertData, message, setMessage, updateData }
+    return { createTransaction, deleteChosenData, deleteData, getData, infiniteScroll, insertData, message, setMessage, updateData }
 }

@@ -1,20 +1,22 @@
 import { Router } from "express";
 import { 
-    deleteAllProducts, deleteOneProduct, getAllProducts, getSearchedProducts, 
+    deleteAllProducts, deleteChosenProducts, deleteOneProduct, getAllProducts, getSearchedProducts, 
     getSelectedProduct, getUserProducts, getUserTotalProducts, insertNewProduct, 
     updateProductDetail
 } from '../controllers/product.controller';
+import { checkOwnership, verifyToken } from "../middlewares/auth.middleware";
 
 const productRouters = Router();
 
-productRouters.delete('/delete/:_id', deleteOneProduct);
-productRouters.delete('/deletes/:user_id', deleteAllProducts);
-productRouters.get('/get-all', getAllProducts);
-productRouters.get('/get/:user_id', getUserProducts);
-productRouters.get('/total/:user_id', getUserTotalProducts);
-productRouters.get('/searched', getSearchedProducts);
-productRouters.get('/detail/:_id', getSelectedProduct);
-productRouters.post('/add-product', insertNewProduct);
-productRouters.put('/update/:_id', updateProductDetail);
+productRouters.delete('/delete-chosen', verifyToken, deleteChosenProducts);
+productRouters.delete('/delete/:_id', verifyToken, deleteOneProduct);
+productRouters.delete('/deletes/:user_id', verifyToken, checkOwnership, deleteAllProducts);
+productRouters.get('/get-all', verifyToken, getAllProducts);
+productRouters.get('/owner/:user_id', verifyToken, checkOwnership, getUserProducts);
+productRouters.get('/total/:user_id', verifyToken, checkOwnership, getUserTotalProducts);
+productRouters.get('/searched', verifyToken, getSearchedProducts);
+productRouters.get('/detail/:_id', verifyToken, getSelectedProduct);
+productRouters.post('/add-product', verifyToken, insertNewProduct);
+productRouters.put('/update/:_id', verifyToken, updateProductDetail);
 
 export default productRouters;

@@ -50,6 +50,7 @@ export default function Cart() {
     return (
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
+            <Navbar2/>
             <div className="h-full bg-blue-900/20 backdrop-blur-lg rounded-xl p-8 border border-blue-400 shadow-lg md:w-3/4 w-full">
                 <button 
                     type='button' 
@@ -61,7 +62,6 @@ export default function Cart() {
                 </button>
                 <CartProductList data={paginatedData} loadMore={isLoadMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage} onRemove={deleteOneProduct}/>
             </div>
-            <Navbar2/>
         </div>
     );
 }

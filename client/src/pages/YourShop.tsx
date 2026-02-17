@@ -14,7 +14,7 @@ export default function YourShop() {
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<SellerProductIntrf>({
-        api_url: `http://localhost:1234/product/get/${user_id}`,
+        api_url: `http://localhost:1234/product/owner/${user_id}`,
         query_key: [`your-products-${user_id}`],
         limit: 20,
         stale_time: 600000,
@@ -51,6 +51,7 @@ export default function YourShop() {
     return (
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
+            <Navbar2/>
             <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
                 <button 
                     type='button' 
@@ -68,7 +69,6 @@ export default function YourShop() {
                     onDelete={deleteOneProduct}
                 />
             </div>
-            <Navbar2/>
         </div>
     );
 }

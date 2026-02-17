@@ -24,7 +24,7 @@ export async function getAllProducts(req: Request, res: Response): Promise<void>
         const allPost = await Product.find(
             {}, 
             { _id: 1, product_name: 1, product_images: 1, product_price: 1 }
-        ).limit(limit).skip(skip);
+        ).limit(limit).skip(skip).sort({ created_at: 1 });
         
         res.json(allPost);
     } catch (error) {
@@ -74,7 +74,7 @@ export async function getUserProducts(req: Request, res: Response): Promise<void
         const signedInUserProducts = await Product.find(
             { user_id: req.params.user_id }, 
             { _id: 1, product_name: 1, product_images: 1, product_price: 1, user_id: 1 }
-        ).limit(limit).skip(skip).sort({ created_at: -1 });
+        ).limit(limit).skip(skip).sort({ created_at: 1 });
 
         res.json(signedInUserProducts);
     } catch (error) {
@@ -142,6 +142,22 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
     }
 }
 
+export async function deleteChosenProducts(req: Request, res: Response): Promise<void> {
+    try {
+        const { publicIds } = req.body as { publicIds: string[] };
+        
+        const deletePromises = publicIds.map(public_id => {
+            return v2.uploader.destroy(public_id);
+        });
+
+        await Promise.all(deletePromises);
+
+        res.status(200).json({ message: 'Gambar berhasil dihapus dari Cloudinary' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
 export async function deleteOneProduct(req: Request, res: Response): Promise<void> {
     try {
         const getProductId = req.params._id;
@@ -184,6 +200,40 @@ export async function updateProductDetail(req: Request, res: Response) {
                     product_price: req.body.product_price,
                     product_stock: req.body.product_stock
                 }
+            }
+        );
+
+        await Cart.updateMany(
+            { product_id: req.params._id }, {
+                $set: {
+                    product_name: req.body.product_name,
+                    product_price: req.body.product_price,
+                    product_images: req.body.product_images
+                }
+            }
+        );
+
+        await PurchaseHistory.updateMany(
+            { 'product_list.product_id': req.params._id }, {
+                $set: {
+                    'product_list.$[elem].product_name': req.body.product_name,
+                    'product_list.$[elem].product_price': req.body.product_price,
+                    'product_list.$[elem].product_images': req.body.product_images
+                }
+            }, {
+                arrayFilters: [{ 'elem.product_id': req.params._id }]
+            }
+        );
+
+        await SaleHistory.updateMany(
+            { 'product_list.product_id': req.params._id }, {
+                $set: {
+                    'product_list.$[elem].product_name': req.body.product_name,
+                    'product_list.$[elem].product_price': req.body.product_price,
+                    'product_list.$[elem].product_images': req.body.product_images
+                }
+            }, {
+                arrayFilters: [{ 'elem.product_id': req.params._id }]
             }
         );
     } catch (error) {

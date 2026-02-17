@@ -7,6 +7,7 @@ import { uploadToCloudinary } from "../services/cloudinary.services";
 import type { ProductDetailIntrf } from "./ProductDetail";
 import Loading from "../components/Loading";
 import { X } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export type MediaFile = {
     file: File;
@@ -23,6 +24,7 @@ export function AddProduct() {
     const { insertData, message } = DataController();
     const currentUserId = user ? user.info.id : '';
 
+    const navigate = useNavigate();
     const [product, setProduct] = useState({ product_description: '', product_name: '', product_price: '', product_stock: '' });
     const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
     const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -103,9 +105,11 @@ export function AddProduct() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
+            navigate(`/your-shop/${currentUserId}`);
         },
         onError: () => {
             setError(message);
+            setIsUploading(false);
         }
     });
 

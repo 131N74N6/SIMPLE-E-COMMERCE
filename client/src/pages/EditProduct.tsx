@@ -13,13 +13,13 @@ export default function EditProduct() {
     const productFolder = 'products_shop';
     const { _id } = useParams();
     const { user } = useAuth();
-    const { getData, updateData } = DataController();
+    const { deleteChosenData, getData, updateData } = DataController();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
     const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
         api_url: `http://localhost:1234/product/detail/${_id}`,
-        query_key: [`product-${_id}`],
+        query_key: [`edit-product-details-${_id}`],
         stale_time: 600000
     });
 
@@ -29,7 +29,8 @@ export default function EditProduct() {
     const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
     const [existingImages, setExistingImages] = useState<{ file_url: string; public_id: string }[]>([]);
     const [editProduct, setEditProduct] = useState({ product_description: '', product_name: '', product_price: '', product_stock: '' });
-    const [isDataChanging, setIsDataChanging] = useState(false);
+    const [isDataChanging, setIsDataChanging] = useState<boolean>(false);
+    const [deleteImage, setDeleteImage] = useState<string[]>([]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
@@ -68,6 +69,7 @@ export default function EditProduct() {
 
     function removeExistingImage(publicId: string) {
         setExistingImages(prev => prev.filter(img => img.public_id !== publicId));
+        setDeleteImage(prev => [...prev, publicId]);
     }
 
     const updateMutation = useMutation({
@@ -77,6 +79,10 @@ export default function EditProduct() {
             for (const media of mediaFiles) {
                 const cloudinary = await uploadToCloudinary(media.file, productFolder);
                 productImages.push({ file_url: cloudinary.url, public_id: cloudinary.publicId });
+            }
+
+            if (deleteImage.length > 0) {
+                await deleteChosenData('http://localhost:1234/product/delete-chosen', deleteImage);
             }
 
             await updateData<ProductDetailIntrf>({
@@ -90,17 +96,21 @@ export default function EditProduct() {
                 }
             });
         },
-        onMutate: () => setIsDataChanging(false),
+        onError: () => {
+            setIsDataChanging(false);
+        },
+        onMutate: () => setIsDataChanging(true),
         onSettled: () => {
             setIsDataChanging(false);
             setEditProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
             setMediaFiles([]);
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`product-detail-${_id}`] });
+            queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
-            queryClient.invalidateQueries({ queryKey: [`product-${_id}`] });
-            navigate(`/product-detail/${_id}`);
+            queryClient.invalidateQueries({ queryKey: [`product-details-${_id}`] });
+            queryClient.invalidateQueries({ queryKey: [`edit-product-details-${_id}`] });
+            navigate(`/your-shop/${currentUserId}`);
         }
     });
 
@@ -124,6 +134,7 @@ export default function EditProduct() {
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
+            <Navbar2/>
             <form className="flex gap-[1.3rem] md:w-3/4 w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleUpdateSubmit}>
                 <input 
                     ref={imageInputRef}
@@ -135,11 +146,11 @@ export default function EditProduct() {
                     id="media-upload"
                 />
                 <section 
-                    className="border-dashed h-screen p-4 cursor-pointer border-2 border-purple-400 rounded-lg overflow-x-auto flex flex-col items-center justify-center"
+                    className="border-dashed h-screen p-4 cursor-pointer border-2 border-blue-400 rounded-lg overflow-x-auto flex flex-col items-center justify-center"
                     onClick={() => imageInputRef.current?.click()}
                 >
                     {mediaFiles.length === 0 && existingImages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center text-purple-400">
+                        <div className="flex flex-col items-center justify-center text-blue-400">
                             <span className="text-lg">Click to select images</span>
                         </div>
                     ) : (
@@ -221,20 +232,19 @@ export default function EditProduct() {
                 <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                     <Link 
                         to={`/your-shop/${currentUserId}`} 
-                        className="text-[0.9rem] text-center p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-colors"
+                        className={`text-[0.9rem] text-center p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-600 text-white ${isDataChanging ? 'opacity-50 disabled:cursor-not-allowed' : 'hover:bg-blue-700'} transition-colors`}
                     >
                         Kembali
                     </Link>
                     <button 
                         type="submit" 
                         disabled={isDataChanging}
-                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-colors"
+                        className={`text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-600 text-white ${isDataChanging ? 'opacity-50 disabled:cursor-not-allowed' : 'hover:bg-blue-700'} transition-colors`}
                     >
                         {isDataChanging ? 'Updating...' : 'Edit Produk'}
                     </button>
                 </div>
             </form>
-            <Navbar2/>
         </section>
     );
 }
