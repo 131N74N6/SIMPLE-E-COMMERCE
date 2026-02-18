@@ -98,3 +98,16 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
         res.status(500).json({ message: 'internal server error' });
     }
 }
+
+export async function updateCartProduct(req: Request, res: Response): Promise<void> {
+    try {
+        await Cart.updateOne({ _id: req.params._id }, {
+            $set: {
+                product_total: req.body.product_total
+            }
+        });
+        res.status(200).json({ message: 'cart product successfuly updated' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}

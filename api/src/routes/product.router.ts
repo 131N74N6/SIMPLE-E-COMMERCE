@@ -12,7 +12,7 @@ productRouters.delete('/delete-chosen', verifyToken, deleteChosenProducts);
 productRouters.delete('/delete/:_id', verifyToken, deleteOneProduct);
 productRouters.delete('/deletes/:user_id', verifyToken, checkOwnership, deleteAllProducts);
 productRouters.get('/get-all', verifyToken, getAllProducts);
-productRouters.get('/owner/:user_id', verifyToken, checkOwnership, getUserProducts);
+productRouters.get('/owner/:user_id', verifyToken, getUserProducts);
 productRouters.get('/total/:user_id', verifyToken, checkOwnership, getUserTotalProducts);
 productRouters.get('/searched', verifyToken, getSearchedProducts);
 productRouters.get('/detail/:_id', verifyToken, getSelectedProduct);

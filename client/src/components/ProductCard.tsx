@@ -11,6 +11,7 @@ export type SellerProductIntrf = {
     product_name: string;
     product_price: number;
     onDelete: (_id: string) => void;
+    isShopOwner: boolean;
     user_id: string;
 }
 
@@ -47,14 +48,20 @@ export function SellerProductCard(props: SellerProductIntrf) {
             </div>
             <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
             <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
-            <div className="flex gap-4">
-                <Link to={`/edit-product/${props._id}`} className="p-[0.45rem] cursor-pointer">
-                    <Pen color="orange"/>
-                </Link>
-                <button type="button" className="p-[0.45rem] cursor-pointer" onClick={() => props.onDelete(props._id)}>
-                    <Trash color="yellow"/>
-                </button>
-            </div>
+            {props.isShopOwner ? (
+                <div className="flex gap-4">
+                    <Link to={`/edit-product/${props._id}`} className="p-[0.45rem] cursor-pointer">
+                        <Pen color="orange"/>
+                    </Link>
+                    <button type="button" className="p-[0.45rem] cursor-pointer" onClick={() => props.onDelete(props._id)}>
+                        <Trash color="yellow"/>
+                    </button>
+                </div>
+            ) : (
+                <div className="flex gap-4">
+                    <Link to={`/product-detail/${props._id}`} className="bg-blue-400 font-medium text-black text-[0.9rem] p-[0.45rem] cursor-pointer">Lihat Detail</Link>
+                </div>
+            )}
         </div>
     );
 }

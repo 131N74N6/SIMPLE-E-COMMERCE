@@ -32,6 +32,10 @@ export async function getTotalProductReview(req: Request, res: Response) {
 
 export async function makeReview(req: Request, res: Response) {
     try {
+        if (!req.body.product_review || req.body.product_review.trim() === '') {
+            return res.status(400).json({ message: 'review content tidak boleh kosong.' });
+        }
+
         const newComment = new Review(req.body);
         await newComment.save();
         res.status(200).json({ message: 'new comment added' });

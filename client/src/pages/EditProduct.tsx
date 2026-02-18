@@ -103,11 +103,11 @@ export default function EditProduct() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
-            queryClient.invalidateQueries({ queryKey: [`product-details-${_id}`] });
             queryClient.invalidateQueries({ queryKey: [`edit-product-details-${_id}`] });
             navigate(`/your-shop/${currentUserId}`);
         },
         onSettled: () => {
+            if (imageInputRef.current) imageInputRef.current.value = '';
             setIsDataChanging(false);
             setEditProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
             setMediaFiles([]);
