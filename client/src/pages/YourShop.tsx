@@ -21,23 +21,23 @@ export default function YourShop() {
     });
 
     const deleteOneMutation = useMutation({
-        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/product/delete/${_id}`),
         onMutate: () => setIsDeleting(true),
-        onSettled: () => setIsDeleting(false),
+        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/product/delete/${_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
-        }
+        },
+        onSettled: () => setIsDeleting(false)
     });
 
     const deleteAllMutation = useMutation({
-        mutationFn: async () => await deleteData(`http://localhost:1234/product/deletes/${user_id}`),
         onMutate: () => setIsDeleting(true),
-        onSettled: () => setIsDeleting(false),
+        mutationFn: async () => await deleteData(`http://localhost:1234/product/deletes/${user_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
-        }
+        },
+        onSettled: () => setIsDeleting(false)
     });
 
     function deleteOneProduct(_id: string) {

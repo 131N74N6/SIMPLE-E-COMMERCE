@@ -102,6 +102,10 @@ export async function getUserTotalProducts(req: Request, res: Response): Promise
 
 export async function insertNewProduct(req: Request, res: Response): Promise<void> {
     try {
+        if (!req.body.product_name || !req.body.product_price || !req.body.product_stock || !req.body.product_images || !req.body.product_description) {
+            res.status(400).json({ message: 'Isi semua input field' });
+            return;
+        }
         const newPost = new Product(req.body);
         await newPost.save();
         res.status(200).json({ message: 'Product berhasil ditambahkan' });
@@ -115,6 +119,11 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
         const signedUserId = req.params.user_id;
         const signedUserProduct = await Product.find({ user_id: signedUserId });
         const gatherPublicIds: string[] = [];
+
+        if (signedUserProduct.length === 0) {
+            res.status(404).json({ message: 'Produk tidak ditemukan.' });
+            return;
+        }
 
         signedUserProduct.forEach(product => {
             product.product_images.forEach(p_image => {
@@ -161,15 +170,10 @@ export async function deleteChosenProducts(req: Request, res: Response): Promise
 export async function deleteOneProduct(req: Request, res: Response): Promise<void> {
     try {
         const getProductId = req.params._id;
-        const selectedProduct = await Product.findById(getProductId);
+        const selectedProduct = await Product.find({ _id: getProductId });
 
-        if (!selectedProduct) {
-            res.status(404).json({ message: 'Produk tidak ditemukan.' });
-            return;
-        }
-
-        if (selectedProduct.product_images && selectedProduct.product_images.length > 0) {
-            const deletePromises = selectedProduct.product_images.map(image => {
+        if (selectedProduct[0].product_images && selectedProduct[0].product_images.length > 0) {
+            const deletePromises = selectedProduct[0].product_images.map(image => {
                 return v2.uploader.destroy(image.public_id);
             });
             await Promise.all(deletePromises);
@@ -191,6 +195,11 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
 
 export async function updateProductDetail(req: Request, res: Response) {
     try {
+        if (!req.body.product_name || !req.body.product_price || !req.body.product_stock || !req.body.product_images || !req.body.product_description) {
+            res.status(400).json({ message: 'Isi semua input field' });
+            return;
+        }
+
         await Product.updateOne(
             { _id: req.params._id }, { 
                 $set: {

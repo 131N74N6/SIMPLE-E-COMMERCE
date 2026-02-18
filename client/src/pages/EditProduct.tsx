@@ -73,6 +73,7 @@ export default function EditProduct() {
     }
 
     const updateMutation = useMutation({
+        onMutate: () => setIsDataChanging(true),
         mutationFn: async () => {
             const productImages: { file_url: string; public_id: string; }[] = [];
 
@@ -99,18 +100,17 @@ export default function EditProduct() {
         onError: () => {
             setIsDataChanging(false);
         },
-        onMutate: () => setIsDataChanging(true),
-        onSettled: () => {
-            setIsDataChanging(false);
-            setEditProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
-            setMediaFiles([]);
-        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
             queryClient.invalidateQueries({ queryKey: [`product-details-${_id}`] });
             queryClient.invalidateQueries({ queryKey: [`edit-product-details-${_id}`] });
             navigate(`/your-shop/${currentUserId}`);
+        },
+        onSettled: () => {
+            setIsDataChanging(false);
+            setEditProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
+            setMediaFiles([]);
         }
     });
 

@@ -3,6 +3,7 @@ import { DataController } from "../services/data.services";
 import { Navbar1, Navbar2 } from "../components/Navbar";
 import useAuth from "../services/auth.services";
 import { ListPlus } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 
 export type ProductDetailIntrf = {
     _id: string;
@@ -15,18 +16,39 @@ export type ProductDetailIntrf = {
     product_name: string;
     product_price: number;
     product_stock: number;
+    username: string;
     user_id: string;
+}
+
+export type CartDetailIntrf = {
+    _id: string;
+    created_at: string;
+    product_images: { 
+        file_url: string;
+        public_id: string;
+    }[];
+    product_name: string;
+    product_price: number;
+    product_total: number;
+    user_id: string;
+    product_id: string;
+    seller_id: string;
 }
 
 export function ProductDetail() {
     const { _id } = useParams();
     const { user  } = useAuth();
-    const { getData } = DataController();
+    const { getData, insertData } = DataController();
+    const currentUserId = user ? user.info.id : '';
     
     const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
         api_url: `http://localhost:1234/product/detail/${_id}`,
         query_key: [`product-details-${_id}`],
         stale_time: 600000
+    });
+
+    const insertCartMutation = useMutation({
+        muta
     });
     
     const isPostOwner = user ? user.info.id === selectedProduct?.[0]?.user_id : false;

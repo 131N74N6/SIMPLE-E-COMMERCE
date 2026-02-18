@@ -10,6 +10,7 @@ export type ProductIntrf = {
     product_name: string;
     product_price: number;
     product_stock: number;
+    username: string;
     user_id: Types.ObjectId;
 }
 
@@ -23,6 +24,7 @@ const productSchema = new Schema<ProductIntrf>({
     product_name: { type: String, required: true },
     product_price: { type: Number, required: true },
     product_stock: { type: Number, required: true },
+    username: { type: String, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true }
 });
 

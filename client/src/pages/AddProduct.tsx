@@ -8,6 +8,7 @@ import type { ProductDetailIntrf } from "./ProductDetail";
 import Loading from "../components/Loading";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router";
+import { Notification2 } from "../components/Notification";
 
 export type MediaFile = {
     file: File;
@@ -21,21 +22,20 @@ export function AddProduct() {
     const queryClient = useQueryClient();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const { loading, user } = useAuth();
-    const { insertData, message } = DataController();
+    const { insertData, message, setMessage } = DataController();
     const currentUserId = user ? user.info.id : '';
 
     const navigate = useNavigate();
     const [product, setProduct] = useState({ product_description: '', product_name: '', product_price: '', product_stock: '' });
     const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
     const [isUploading, setIsUploading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (error) {
-            const timer = setTimeout(() => setError(null), 3000);
+        if (message) {
+            const timer = setTimeout(() => setMessage(null), 3000);
             return () => clearTimeout(timer);
         }
-    }, [error, setError]);
+    }, [message, setMessage]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
@@ -92,24 +92,24 @@ export function AddProduct() {
                     product_name: product.product_name.trim(),
                     product_price: parseInt(product.product_price.trim()),
                     product_stock: parseInt(product.product_stock.trim()),
+                    username: user ? user.info.username : 'Unknown',
                     user_id: currentUserId
                 }
             });
         },
-        onSettled: () => {
-            if (imageInputRef.current) imageInputRef.current.value = '';
+        onError: () => {
             setIsUploading(false);
-            setProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
-            setMediaFiles([]);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
             navigate(`/your-shop/${currentUserId}`);
         },
-        onError: () => {
-            setError(message);
+        onSettled: () => {
+            if (imageInputRef.current) imageInputRef.current.value = '';
             setIsUploading(false);
+            setProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
+            setMediaFiles([]);
         }
     });
 
@@ -127,6 +127,7 @@ export function AddProduct() {
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
+            {message ? <Notification2 message_text={message}/> : null}
             <form className="flex gap-[1.3rem] md:w-3/4 w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleSubmit}>
                 <input 
                     ref={imageInputRef}

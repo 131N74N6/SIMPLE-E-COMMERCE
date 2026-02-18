@@ -76,7 +76,14 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
 
 export async function deleteAllProducts(req: Request, res: Response): Promise<void> {
     try {
-        Cart.deleteMany({ user_id: req.params.user_id });
+        const cartProducts = await Cart.find({ user_id: req.params.user_id });
+
+        if (cartProducts.length === 0) {
+            res.status(404).json({ message: 'Produk tidak ditemukan.' });
+            return;
+        }
+
+        await Cart.deleteMany({ user_id: req.params.user_id });
         res.status(200).json({ message: 'all products in cart successfuly deleted' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
@@ -85,7 +92,7 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
 
 export async function deleteOneProduct(req: Request, res: Response): Promise<void> {
     try {
-        Cart.deleteOne({ _id : req.params._id });
+        await Cart.deleteOne({ _id : req.params._id });
         res.status(200).json({ message: 'products in cart successfuly deleted' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });

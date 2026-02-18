@@ -20,23 +20,17 @@ export default function Cart() {
     });
 
     const deleteOneMutation = useMutation({
-        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/product/delete/${_id}`),
         onMutate: () => setIsDeleting(true),
-        onSettled: () => setIsDeleting(false),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['all-products'] });
-            queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
-        }
+        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/cart/delete/${_id}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
+        onSettled: () => setIsDeleting(false)
     });
 
     const deleteAllMutation = useMutation({
-        mutationFn: async () => await deleteData(`http://localhost:1234/product/deletes/${user_id}`),
         onMutate: () => setIsDeleting(true),
-        onSettled: () => setIsDeleting(false),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['all-products'] });
-            queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
-        }
+        mutationFn: async () => await deleteData(`http://localhost:1234/cart/deletes/${user_id}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
+        onSettled: () => setIsDeleting(false)
     });
 
     function deleteOneProduct(_id: string) {
@@ -51,7 +45,7 @@ export default function Cart() {
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
             <Navbar2/>
-            <div className="h-full bg-blue-900/20 backdrop-blur-lg rounded-xl p-8 border border-blue-400 shadow-lg md:w-3/4 w-full">
+            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
                 <button 
                     type='button' 
                     className={`${isDeleting ? 'cursor-not-allowed bg-orange-800' : 'cursor-pointer'} bg-orange-400 text-black font-400 text-[0.9rem] p-[0.4rem]`} 

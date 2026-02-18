@@ -43,7 +43,7 @@ export function SellerProductCard(props: SellerProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
             <div className="rounded-lg relative aspect-square">
-                <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-50"/>
             </div>
             <h3 className="line-clamp-1 font-500 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
             <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
@@ -63,7 +63,7 @@ export function CustomerProductCard(props: CustomerProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
             <div className="rounded-lg relative aspect-square">
-                <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-50"/>
             </div>
             <h3 className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
             <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
@@ -78,7 +78,7 @@ export function ProductCardInCart(props: CartProductIntrf) {
     return (
         <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400/30 flex flex-col gap-4 p-4">
             <div className="rounded-lg relative aspect-square">
-                <img src={props.product_images[0].file_url} className="object-cover w-full h-full rounded-lg"/>
+                <img src={props.product_images[0].file_url} className="object-cover w-full h-50 rounded-lg"/>
             </div>
             <h3 className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
             <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
