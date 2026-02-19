@@ -12,7 +12,7 @@ export type OrderIntrf = {
         product_name: string;
         product_price: number;
         product_id: Types.ObjectId;
-        seller_name: string;
+        product_total: number;
         seller_id: Types.ObjectId;
     }[];
     snap_token: string;
@@ -34,7 +34,7 @@ const orderSchema = new Schema<OrderIntrf>({
         product_name: { type: String, required: true },
         product_price: { type: Number, required: true },
         product_id: { type: Schema.Types.ObjectId, required: true },
-        seller_name: { type: String, required: true },
+        product_total: { type: Number, required: true },
         seller_id: { type: Schema.Types.ObjectId, required: true }
     }],
     snap_token: { type: String },

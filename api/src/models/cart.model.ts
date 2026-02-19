@@ -12,6 +12,7 @@ export type CartIntrf = {
     user_id: Types.ObjectId;
     product_id: Types.ObjectId;
     seller_id: Types.ObjectId;
+    seller_name: string;
 }
 
 const cartSchema = new Schema<CartIntrf>({
@@ -25,7 +26,8 @@ const cartSchema = new Schema<CartIntrf>({
     product_total: { type: Number, required: true },
     user_id: { type: Schema.Types.ObjectId, required: true },
     product_id: { type: Schema.Types.ObjectId, required: true },
-    seller_id: { type: Schema.Types.ObjectId, required: true }
+    seller_id: { type: Schema.Types.ObjectId, required: true },
+    seller_name: { type: String, required: true }
 });
 
 export const Cart = mongoose.model<CartIntrf>('cart', cartSchema, 'cart');

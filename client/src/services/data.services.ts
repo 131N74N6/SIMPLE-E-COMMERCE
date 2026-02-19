@@ -29,9 +29,18 @@ export type TransactionIntrf = {
     _id: string;
     customer_id: string;
     customer_name: string;
-    seller_name: string;
-    seller_id: string;
-    product_list: string;
+    product_list: {
+        product_images: { 
+            file_url: string;
+            public_id: string;
+        }[];
+        product_name: string;
+        product_price: number;
+        product_total: number;
+        product_id: string;
+        seller_id: string;
+        seller_name: string;
+    }[];
     total_quantity: number;
     total_price: number;
 }
@@ -195,11 +204,14 @@ export function DataController() {
         return response;
     }
 
-    async function createTransaction(props: TransactionIntrf) {
+    async function createTransaction(props: Omit<TransactionIntrf, '_id'>) {
         const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(props),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            method: 'POST'
         });
     
         const response = await request.json();

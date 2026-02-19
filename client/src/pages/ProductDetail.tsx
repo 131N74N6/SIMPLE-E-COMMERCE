@@ -35,6 +35,7 @@ export type CartDetailIntrf = {
     user_id: string;
     product_id: string;
     seller_id: string;
+    seller_name: string;
 }
 
 export type ReviewIntrf = {
@@ -78,7 +79,8 @@ export function ProductDetail() {
                     product_total: 1,
                     user_id: currentUserId,
                     product_id: selectedProduct ? selectedProduct[0]._id : '',
-                    seller_id: selectedProduct ? selectedProduct[0].user_id : ''
+                    seller_id: selectedProduct ? selectedProduct[0].user_id : '',
+                    seller_name: selectedProduct ? selectedProduct[0].username : '',
                 }
             });
         },

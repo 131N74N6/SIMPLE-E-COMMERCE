@@ -23,9 +23,11 @@ export type CartListIntrf = {
     data: CartProductIntrf[];
     selectedId: string | null;
     isReachedEnd: boolean;
+    isUpdating: boolean;
     loadMore: boolean;
     setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
     onRemove: (_id: string) => void;
+    onUpdate: (cartData: Pick<CartProductIntrf, '_id' | 'product_total'>) => void;
     onSelect: (id: string) => void;
 }
 
@@ -46,8 +48,10 @@ export function CartProductList(props: CartListIntrf) {
                         key={product._id} 
                         {...product} 
                         is_selected={props.selectedId === product._id} 
+                        isUpdating={props.isUpdating}
                         onRemove={props.onRemove} 
                         onSelect={props.onSelect}
+                        onUpdate={props.onUpdate}
                     />
                 ))}
             </div>

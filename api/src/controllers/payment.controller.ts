@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import midtransClient from 'midtrans-client';
 import { Order } from '../models/order.model';
 import { Payment } from '../models/payment.model';
+import { Product } from '../models/product.model';
 
 let snap = new midtransClient.Snap({
     isProduction: false,
@@ -10,9 +11,9 @@ let snap = new midtransClient.Snap({
 });
 
 export async function createTransaction (req: Request, res: Response) {
-    const { customer_id, customer_name, seller_name, seller_id, product_list, total_quantity, total_price } = req.body;
+    const { customer_id, customer_name, product_list, total_quantity, total_price } = req.body;
 
-    if (!customer_id || !customer_name || !seller_name || !seller_id || !product_list || !total_quantity || !total_price) {
+    if (!customer_id || !customer_name || !product_list || !total_quantity || !total_price) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -21,8 +22,6 @@ export async function createTransaction (req: Request, res: Response) {
             created_at: new Date().toISOString(),
             customer_id,
             customer_name,
-            seller_name,
-            seller_id,
             product_list,
             total_quantity,
             status: 'pending',
@@ -63,6 +62,15 @@ export async function handleWebhook (req: Request, res: Response) {
         // Update status order
         order.status = notification.transaction_status;
         await order.save();
+
+        if (notification.transaction_status === 'settlement') {
+            for (const item of order.product_list) {
+                await Product.updateOne(
+                    { _id: item.product_id },
+                    { $inc: { product_stock: -item.product_total } } 
+                );
+            }
+        }
 
         // Simpan data pembayaran ke collection Payment
         const payment = new Payment({

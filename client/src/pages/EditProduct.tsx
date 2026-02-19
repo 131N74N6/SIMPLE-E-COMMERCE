@@ -110,6 +110,7 @@ export default function EditProduct() {
             if (imageInputRef.current) imageInputRef.current.value = '';
             setIsDataChanging(false);
             setEditProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
+            setExistingImages([]);
             setMediaFiles([]);
         }
     });

@@ -9,18 +9,11 @@ export type SearchedPost = {
     stale_time: number;
 }
 
-export type ProductIntrf = {
-    _id: string;
-    product_name: string;
-    product_images: { file_url: string; public_id: string; }[];
-    product_price: number;
-}
-
 export default function FilterHandler() {
     const { user } = useAuth();
     const token = user ? user.token : null;
     
-    function searchedPost(props: SearchedPost) {
+    function searchedPost<BIN1999>(props: SearchedPost) {
         const fecthers = async ({ pageParam = 1 }: { pageParam?: number }) => {
             const request = await fetch(`${props.api_url}?searched=${props.searched}&page=${pageParam}&limit=${props.limit}`, {
                 headers: {
@@ -57,12 +50,12 @@ export default function FilterHandler() {
             refetchOnWindowFocus: false,
         });
 
-        const paginatedData: ProductIntrf[] = data ? data.pages.flat() : [];
+        const paginatedData: BIN1999[] = data ? data.pages.flat() : [];
         const isReachedEnd = !hasNextPage;
         const isLoadingMore = isFetchingNextPage;
 
         return {
-            data: paginatedData,
+            paginatedData,
             error,
             isLoading,
             isLoadingMore,

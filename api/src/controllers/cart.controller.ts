@@ -29,7 +29,7 @@ export async function getSearchedProducts(req: Request, res: Response): Promise<
 
         const searchedPost = await Cart.find(
             { user_id: req.params.user_id, product_name: { $regex: new RegExp(searched, 'i') } },
-            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1, product_total: 1 }
+            { created_at: 0 }
         ).limit(limit).skip(skip).sort({ created_at: -1 });
         
         res.json(searchedPost);
@@ -46,7 +46,7 @@ export async function getUserProducts(req: Request, res: Response): Promise<void
 
         const signedInUserProducts = await Cart.find(
             { user_id: req.params.user_id }, 
-            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1 }
+            { created_at: 0 }
         ).limit(limit).skip(skip).sort({ created_at: -1 });
 
         res.json(signedInUserProducts);
@@ -109,6 +109,11 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
 
 export async function updateCartProduct(req: Request, res: Response): Promise<void> {
     try {
+        if (req.body.product_total < 1) {
+            res.status(400).json({ message: 'total produk minimal 1' });
+            return;
+        }
+
         await Cart.updateOne({ _id: req.params._id }, {
             $set: {
                 product_total: req.body.product_total
