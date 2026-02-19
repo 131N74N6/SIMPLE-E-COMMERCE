@@ -196,7 +196,7 @@ export function DataController() {
     }
 
     async function createTransaction(props: TransactionIntrf) {
-        const request = await fetch('http://localhost:1234/payment/create-transaction', {
+        const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(props),

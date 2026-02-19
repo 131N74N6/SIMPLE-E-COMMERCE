@@ -123,10 +123,11 @@ export function AddProduct() {
             <Loading/>
         </div>
     );
-
+    
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
+            <Navbar2/>
             {message ? <Notification2 message_text={message}/> : null}
             <form className="flex gap-[1.3rem] md:w-3/4 w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleSubmit}>
                 <input 
@@ -211,7 +212,6 @@ export function AddProduct() {
                     {isUploading ? 'Uploading...' : 'Tambah Produk'}
                 </button>
             </form>
-            <Navbar2/>
         </section>
     );
 }

@@ -6,12 +6,25 @@ import { CartProductList } from '../components/ProductList';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
+type CartStatIntrf = {
+    product_total: number;
+    price_total: number;
+}
+
 export default function Cart() {
     const { user_id } = useParams();
     const queryClient = useQueryClient();
-    const { deleteData, infiniteScroll } = DataController();
+    const { deleteData, getData, infiniteScroll } = DataController();
+
+    const [selectedId, setSelectedId] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     
+    const { data: cartStats } = getData<CartStatIntrf>({
+        api_url: `http://localhost:1234/api/cart/total/${user_id}`,
+        query_key: [`cart-stats-${user_id}`],
+        stale_time: 600000,
+    });
+
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
         api_url: `http://localhost:1234/api/cart/${user_id}`,
         query_key: [`cart-items-${user_id}`],
@@ -22,16 +35,26 @@ export default function Cart() {
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
         mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/api/cart/delete/${_id}`),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
+            queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
+        },
         onSettled: () => setIsDeleting(false)
     });
 
     const deleteAllMutation = useMutation({
         onMutate: () => setIsDeleting(true),
         mutationFn: async () => await deleteData(`http://localhost:1234/api/cart/deletes/${user_id}`),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
+            queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
+        },
         onSettled: () => setIsDeleting(false)
     });
+
+    function handleSelect(id: string) {
+        setSelectedId(prev => prev === id ? null : id);
+    }
 
     function deleteOneProduct(_id: string) {
         deleteOneMutation.mutate(_id);
@@ -62,8 +85,20 @@ export default function Cart() {
                     >
                         Check Out
                     </button>
+                    <div>
+                        <div className="text-white font-bold">Total Products: {cartStats ? cartStats.product_total : 0}</div>
+                        <div className="text-white font-bold">Total Price: IDR {cartStats ? cartStats.price_total : 0}</div>
+                    </div>
                 </div>
-                <CartProductList data={paginatedData} loadMore={isLoadMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage} onRemove={deleteOneProduct}/>
+                <CartProductList 
+                    data={paginatedData} 
+                    loadMore={isLoadMore} 
+                    isReachedEnd={isReachedEnd} 
+                    selectedId={selectedId} 
+                    setSize={fetchNextPage} 
+                    onRemove={deleteOneProduct} 
+                    onSelect={handleSelect}
+                />
             </div>
         </div>
     );

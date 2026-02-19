@@ -21,10 +21,12 @@ export type CustomerListIntrf = {
 
 export type CartListIntrf = {
     data: CartProductIntrf[];
+    selectedId: string | null;
     isReachedEnd: boolean;
     loadMore: boolean;
     setSize: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>
     onRemove: (_id: string) => void;
+    onSelect: (id: string) => void;
 }
 
 export function CartProductList(props: CartListIntrf) {
@@ -40,7 +42,13 @@ export function CartProductList(props: CartListIntrf) {
         <section className="gap-4 flex flex-col overflow-y-auto">
             <div className="flex flex-col gap-4 overflow-y-auto">
                 {props.data.map((product) => (
-                    <ProductCardInCart key={product._id} {...product} onRemove={props.onRemove}/>
+                    <ProductCardInCart 
+                        key={product._id} 
+                        {...product} 
+                        is_selected={props.selectedId === product._id} 
+                        onRemove={props.onRemove} 
+                        onSelect={props.onSelect}
+                    />
                 ))}
             </div>
             <div className="flex justify-center">

@@ -49,15 +49,15 @@ export function Navbar2() {
 
     return (
         <>
-            <nav className="md:hidden bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 md:w-1/4 shrink-0 hidden flex-col gap-5 p-4">
-                <button onClick={toggleSidebar} className="cursor-pointer text-blue-400 font-medium text-4">
-                    <Menu size={24}></Menu>
+            <nav className="md:hidden bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex items-center p-4">
+                <button onClick={toggleSidebar} className="cursor-pointer text-blue-400 font-medium">
+                    <Menu size={24} />
                 </button>
             </nav>
 
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-75 z-40"
+                    className="fixed inset-0 opacity-75 z-40"
                     onClick={toggleSidebar}
                 ></div>
             )}

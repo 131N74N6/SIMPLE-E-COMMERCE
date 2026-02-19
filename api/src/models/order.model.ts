@@ -4,7 +4,6 @@ export type OrderIntrf = {
     created_at: string;
     customer_id: Types.ObjectId;
     customer_name: string;
-    cart_id: Types.ObjectId;
     product_list: {
         product_images: { 
             file_url: string;
@@ -27,7 +26,6 @@ const orderSchema = new Schema<OrderIntrf>({
     created_at: { type: String, required: true },
     customer_id: { type: Schema.Types.ObjectId, required: true },
     customer_name: { type: String, required: true },
-    cart_id: { type: Schema.Types.ObjectId, required: true },
     product_list: [{
         product_images: [{ 
             file_url: { type: String, required: true },

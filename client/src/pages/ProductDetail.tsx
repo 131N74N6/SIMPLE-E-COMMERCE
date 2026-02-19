@@ -82,7 +82,10 @@ export function ProductDetail() {
                 }
             });
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${currentUserId}`] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [`cart-items-${currentUserId}`] });
+            queryClient.invalidateQueries({ queryKey: [`cart-stats-${currentUserId}`] });
+        },
         onSettled: () => setIsProcessing(false)
     });
 

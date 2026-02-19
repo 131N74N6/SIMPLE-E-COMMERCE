@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Cart } from '../models/cart.model';
 import dotenv from 'dotenv';
+import { Types } from 'mongoose';
 
 dotenv.config();
 
@@ -57,8 +58,15 @@ export async function getUserProducts(req: Request, res: Response): Promise<void
 export async function getUserTotalProducts(req: Request, res: Response): Promise<void> {
     try {
         const getUserId = req.params.user_id;
-        const totalPost = await Cart.find({ user_id: getUserId }).countDocuments();
-        res.json(totalPost);
+        const getUserProduct = await Cart.find({ user_id: getUserId });
+        
+        const productTotal = getUserProduct.reduce((total, item) => total + item.product_total, 0);
+        const priceTotal = getUserProduct.reduce((total, product) => total + (product.product_price * product.product_total), 0);
+
+        res.json({ 
+            product_total:productTotal, 
+            price_total: priceTotal 
+        });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }
