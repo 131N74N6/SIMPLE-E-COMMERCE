@@ -18,7 +18,7 @@ export default function EditProduct() {
     const navigate = useNavigate();
 
     const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
-        api_url: `http://localhost:1234/product/detail/${_id}`,
+        api_url: `http://localhost:1234/api/product/detail/${_id}`,
         query_key: [`edit-product-details-${_id}`],
         stale_time: 600000
     });
@@ -83,11 +83,11 @@ export default function EditProduct() {
             }
 
             if (deleteImage.length > 0) {
-                await deleteChosenData('http://localhost:1234/product/delete-chosen', deleteImage);
+                await deleteChosenData('http://localhost:1234/api/product/delete-chosen', deleteImage);
             }
 
             await updateData<ProductDetailIntrf>({
-                api_url: `http://localhost:1234/product/update/${_id}`,
+                api_url: `http://localhost:1234/api/product/update/${_id}`,
                 data: {
                     product_description: editProduct.product_description.trim(),
                     product_images: [...existingImages, ...productImages],

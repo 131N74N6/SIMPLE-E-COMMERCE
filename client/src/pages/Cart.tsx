@@ -13,7 +13,7 @@ export default function Cart() {
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
-        api_url: `http://localhost:1234/cart/${user_id}`,
+        api_url: `http://localhost:1234/api/cart/${user_id}`,
         query_key: [`cart-items-${user_id}`],
         limit: 20,
         stale_time: 600000,
@@ -21,14 +21,14 @@ export default function Cart() {
 
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/cart/delete/${_id}`),
+        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/api/cart/delete/${_id}`),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
         onSettled: () => setIsDeleting(false)
     });
 
     const deleteAllMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async () => await deleteData(`http://localhost:1234/cart/deletes/${user_id}`),
+        mutationFn: async () => await deleteData(`http://localhost:1234/api/cart/deletes/${user_id}`),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] }),
         onSettled: () => setIsDeleting(false)
     });
@@ -46,14 +46,23 @@ export default function Cart() {
             <Navbar1/>
             <Navbar2/>
             <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
-                <button 
-                    type='button' 
-                    className={`${isDeleting ? 'cursor-not-allowed bg-orange-800' : 'cursor-pointer'} bg-orange-400 text-black font-400 text-[0.9rem] p-[0.4rem]`} 
-                    disabled={isDeleting} 
-                    onClick={deleteAllProdcuts}
-                >
-                    Delete All
-                </button>
+                <div className='grid grid-cols-2 gap-4'>
+                    <button 
+                        type='button' 
+                        className="bg-orange-300 text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
+                        disabled={isDeleting} 
+                        onClick={deleteAllProdcuts}
+                    >
+                        Delete All
+                    </button>
+                    <button 
+                        type='button' 
+                        className="bg-orange-300 text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
+                        disabled={isDeleting} 
+                    >
+                        Check Out
+                    </button>
+                </div>
                 <CartProductList data={paginatedData} loadMore={isLoadMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage} onRemove={deleteOneProduct}/>
             </div>
         </div>

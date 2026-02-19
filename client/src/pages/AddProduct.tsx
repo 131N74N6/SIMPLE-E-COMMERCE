@@ -84,7 +84,7 @@ export function AddProduct() {
             }
 
             await insertData<ProductDetailIntrf>({
-                api_url: 'http://localhost:1234/product/add-product',
+                api_url: 'http://localhost:1234/api/product/add-product',
                 data: {
                     created_at: currentDate,
                     product_description: product.product_description.trim(),

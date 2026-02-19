@@ -45,7 +45,7 @@ export default function useAuth() {
                 return;
             }
 
-            const request = await fetch(`http://localhost:1234/auth/sign-in`, {
+            const request = await fetch(`http://localhost:1234/api/auth/sign-in`, {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ password, username }),
                 method: 'POST',
@@ -86,7 +86,7 @@ export default function useAuth() {
                 return;
             }
 
-            const request = await fetch(`http://localhost:1234/auth/sign-up`, {
+            const request = await fetch(`http://localhost:1234/api/auth/sign-up`, {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ created_at, email, password, username }),
                 method: 'POST',

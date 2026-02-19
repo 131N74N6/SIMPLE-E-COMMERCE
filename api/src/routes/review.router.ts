@@ -4,7 +4,7 @@ import { verifyToken } from "../middlewares/auth.middleware";
 
 const reviewRouters = Router();
 
-reviewRouters.get('/:product_id', verifyToken, getProductReview);
+reviewRouters.get('/get/:product_id', verifyToken, getProductReview);
 reviewRouters.get('/total/:product_id', verifyToken, getTotalProductReview);
 reviewRouters.post('/make', verifyToken, makeReview);
 

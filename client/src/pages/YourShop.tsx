@@ -16,7 +16,7 @@ export default function YourShop() {
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<SellerProductIntrf>({
-        api_url: `http://localhost:1234/product/owner/${user_id}`,
+        api_url: `http://localhost:1234/api/product/owner/${user_id}`,
         query_key: [`your-products-${user_id}`],
         limit: 20,
         stale_time: 600000,
@@ -24,7 +24,7 @@ export default function YourShop() {
 
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/product/delete/${_id}`),
+        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/api/product/delete/${_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
@@ -34,7 +34,7 @@ export default function YourShop() {
 
     const deleteAllMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async () => await deleteData(`http://localhost:1234/product/deletes/${user_id}`),
+        mutationFn: async () => await deleteData(`http://localhost:1234/api/product/deletes/${user_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${user_id}`] });
@@ -51,7 +51,6 @@ export default function YourShop() {
     }
 
     const isShopOwner = user ? user.info.id === user_id : false;
-    console.log(isShopOwner);
 
     return (
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">

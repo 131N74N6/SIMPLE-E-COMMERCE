@@ -28,7 +28,7 @@ export async function getSearchedProducts(req: Request, res: Response): Promise<
 
         const searchedPost = await Cart.find(
             { user_id: req.params.user_id, product_name: { $regex: new RegExp(searched, 'i') } },
-            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1 }
+            { _id: 1, product_name: 1, product_images: 1, product_price: 1, product_id: 1, product_total: 1 }
         ).limit(limit).skip(skip).sort({ created_at: -1 });
         
         res.json(searchedPost);

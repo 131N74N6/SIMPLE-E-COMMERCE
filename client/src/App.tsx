@@ -10,6 +10,7 @@ import { AddProduct } from "./pages/AddProduct";
 import SearchProduct from "./pages/SearchProduct";
 import EditProduct from "./pages/EditProduct";
 import { ProductDetail } from "./pages/ProductDetail";
+import { Reviews } from "./pages/Reviews";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function App() {
                     <Route path="/edit-product/:_id" element={<ProtectedRoute><EditProduct/></ProtectedRoute>}/>
                     <Route path="/product-detail/:_id" element={<ProtectedRoute><ProductDetail/></ProtectedRoute>}/>
                     <Route path="/your-shop/:user_id" element={<ProtectedRoute><YourShop/></ProtectedRoute>}/>
+                    <Route path="/reviews/:_id" element={<ProtectedRoute><Reviews/></ProtectedRoute>}/>
                     <Route path="/cart/:user_id" element={<ProtectedRoute><Cart/></ProtectedRoute>}/>
                     <Route path="/search-product" element={<ProtectedRoute><SearchProduct/></ProtectedRoute>}/>
                     <Route path="/" element={<Navigate to="/home" replace/>}/>

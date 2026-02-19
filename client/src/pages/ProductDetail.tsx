@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { DataController } from "../services/data.services";
 import { Navbar1, Navbar2 } from "../components/Navbar";
 import useAuth from "../services/auth.services";
@@ -49,13 +49,14 @@ export type ReviewIntrf = {
 
 export function ProductDetail() {
     const { _id } = useParams();
+    const navigate = useNavigate();
     const { user  } = useAuth();
     const { getData, insertData } = DataController();
     const queryClient = useQueryClient();
     const currentUserId = user ? user.info.id : '';
     
     const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
-        api_url: `http://localhost:1234/product/detail/${_id}`,
+        api_url: `http://localhost:1234/api/product/detail/${_id}`,
         query_key: [`product-details-${_id}`],
         stale_time: 600000
     });
@@ -68,7 +69,7 @@ export function ProductDetail() {
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
             await insertData<CartDetailIntrf>({
-                api_url: 'http://localhost:1234/cart/add',
+                api_url: 'http://localhost:1234/api/cart/add',
                 data: {
                     created_at: new Date().toISOString(),
                     product_images: selectedProduct ? selectedProduct[0].product_images : [],
@@ -89,7 +90,7 @@ export function ProductDetail() {
         onMutate: () => setIsUploading(true),
         mutationFn: async () => {
             await insertData<ReviewIntrf>({
-                api_url: 'http://localhost:1234/review/make',
+                api_url: 'http://localhost:1234/api/review/make',
                 data: {
                     created_at: new Date().toISOString(),
                     product_review: comment.trim(),
@@ -102,8 +103,8 @@ export function ProductDetail() {
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`product-reviews-${_id}`] }),
         onSettled: () => {
-            setIsUploading(false);
             setComment('');
+            setIsUploading(false);
         }
     });
 
@@ -147,7 +148,7 @@ export function ProductDetail() {
                             disabled={isProcessing}
                             className="bg-orange-400 flex gap-2 items-center cursor-pointer hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium"
                         >
-                            <ListPlus color="white" className="mr-1"/>
+                            <ListPlus color="black" className="mr-1"/>
                             Add to Cart
                         </button>
                     )}
@@ -166,13 +167,23 @@ export function ProductDetail() {
                             rows={6}
                             onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setComment(event.target.value)}
                         />
-                        <button 
-                            type="submit" 
-                            disabled={isUploading}
-                            className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
-                        >
-                            Submit Comment
-                        </button>
+                        <div className="grid grid-cols-2 gap-2">
+                            <button 
+                                type="submit" 
+                                disabled={isUploading}
+                                className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
+                            >
+                                Submit Comment
+                            </button>
+                            <button 
+                                type="button" 
+                                disabled={isUploading}
+                                onClick={() => navigate(`/reviews/${_id}`)}
+                                className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
+                            >
+                                View Reviews
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

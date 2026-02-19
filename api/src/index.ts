@@ -14,13 +14,13 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use('/auth', authRateLimiter, authRouters);
-app.use('/cart', cartRouters)
-app.use('/product', productRouters);
-app.use('/payment', paymentRouters);
-app.use('/review', reviewRouters);
-app.use('/purchase-history', purchaseHistoryRouters);
-app.use('/sale-history', saleHistoryRouters);
+app.use('/api/auth', authRateLimiter, authRouters);
+app.use('/api/cart', cartRouters)
+app.use('/api/product', productRouters);
+app.use('/api/payment', paymentRouters);
+app.use('/api/review', reviewRouters);
+app.use('/api/purchase-history', purchaseHistoryRouters);
+app.use('/api/sale-history', saleHistoryRouters);
 
 db.then(() => {
     app.listen(1234, () => console.log('server running at http://localhost:1234'));
