@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Cart } from '../models/cart.model';
 import dotenv from 'dotenv';
-import { Types } from 'mongoose';
 
 dotenv.config();
 
@@ -77,6 +76,16 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
         const newPost = new Cart(req.body);
         await newPost.save();
         res.status(200).json({ message: 'new product added' });
+    } catch (error) {
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function isProductInCart(req: Request, res: Response): Promise<void> {
+    try {
+        const { user_id, product_id } = req.query;
+        const isProductExist = await Cart.find({ user_id: user_id, product_id: product_id });
+        res.json({ isProductExist });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

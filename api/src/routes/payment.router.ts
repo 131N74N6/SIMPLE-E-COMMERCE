@@ -6,6 +6,6 @@ import { verifyToken } from '../middlewares/auth.middleware';
 const paymentRouters = express.Router();
 
 paymentRouters.post('/create-transaction', verifyToken, createTransaction);
-paymentRouters.post('/webhook', verifyToken, validateWebhook, handleWebhook);
+paymentRouters.post('/webhook', validateWebhook, handleWebhook);
 
 export default paymentRouters

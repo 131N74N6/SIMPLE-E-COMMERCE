@@ -62,6 +62,14 @@ export function ProductDetail() {
         stale_time: 600000
     });
 
+    const { data: isProductInCart } = getData<boolean>({
+        api_url: `http://localhost:1234/api/cart/check?user_id=${currentUserId}&product_id=${_id}`,
+        query_key: [`cart-check-${currentUserId}-${_id}`],
+        stale_time: 600000
+    });
+
+    console.log('isProductInCart:', isProductInCart);
+
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const [comment, setComment] = useState<string>('');
@@ -87,9 +95,11 @@ export function ProductDetail() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${currentUserId}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${currentUserId}`] });
+            queryClient.invalidateQueries({ queryKey: [`cart-check-${currentUserId}-${_id}`] });
         },
         onSettled: () => setIsProcessing(false)
     });
+
 
     const insertReviewMutation = useMutation({
         onMutate: () => setIsUploading(true),
@@ -150,7 +160,7 @@ export function ProductDetail() {
                         <button
                             type="button"
                             onClick={handleAddToCart}
-                            disabled={isProcessing}
+                            disabled={isProcessing || isProductInCart}
                             className="bg-orange-400 flex gap-2 items-center cursor-pointer hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium"
                         >
                             <ListPlus color="black" className="mr-1"/>

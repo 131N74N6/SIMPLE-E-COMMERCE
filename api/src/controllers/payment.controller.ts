@@ -89,8 +89,8 @@ export async function handleWebhook(req: Request, res: Response) {
                 transaction_time: notification.transaction_time,
                 transaction_id: notification.transaction_id,
             },
-            status: notification.transaction_status, // Bisa 'settlement', 'cancel', 'expire', dll
-            user_id: order.customer_id, // Asumsi user_id = customer_id
+            status: notification.transaction_status, // 'settlement', 'cancel', 'expire', dll
+            user_id: order.customer_id, // user_id = customer_id
             order_id: order._id,
         });
         

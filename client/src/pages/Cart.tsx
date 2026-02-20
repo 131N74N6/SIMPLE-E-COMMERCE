@@ -44,7 +44,7 @@ export default function Cart() {
     });
 
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
-        api_url: `http://localhost:1234/api/cart/${user_id}`,
+        api_url: `http://localhost:1234/api/cart/get/${user_id}`,
         query_key: [`cart-items-${user_id}`],
         limit: 20,
         stale_time: 600000,

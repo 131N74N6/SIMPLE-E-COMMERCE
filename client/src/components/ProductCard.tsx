@@ -1,4 +1,4 @@
-import { Pen, Trash } from "lucide-react";
+import { Info, Pen, PencilLine, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -172,27 +172,27 @@ export function ProductCardInCart(props: CartProductIntrf) {
                     <div className="text-blue-400 text-[0.9rem] font-medium">{props.product_total}</div>
                 </div>
             </div>
-            <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+            <div className="flex flex-row gap-4">
                 <button 
                     type="button" 
-                    className="bg-blue-400 rounded text-blue-900 font-medium text-[0.9rem] p-[0.45rem] cursor-pointer hover:bg-blue-500" 
+                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
                     onClick={() => props.onRemove(props._id)}
                 >
-                    Remove
+                    <Trash size={19}/>
                 </button>
                 <button 
                     type="button" 
-                    className="bg-blue-400 rounded text-blue-900 font-medium text-[0.9rem] p-[0.45rem] cursor-pointer hover:bg-blue-500" 
+                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
                     onClick={() => navigate(`/product-detail/${props.product_id}`)}
                 >
-                    Lihat Detail
+                    <Info size={19}/>
                 </button>
                 <button 
                     type="button" 
-                    className="bg-blue-400 rounded text-blue-900 font-medium text-[0.9rem] p-[0.45rem] cursor-pointer hover:bg-blue-500" 
+                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
                     onClick={() => props.onSelect(props._id)}
                 >
-                    Edit
+                    <PencilLine size={19}/>
                 </button>
             </div>
         </div>

@@ -219,6 +219,7 @@ export function DataController() {
 
         if (!request.ok) {
             setMessage(response.message);
+            return null;
         } else {
             setMessage(null);
             return response;
