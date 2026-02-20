@@ -14,7 +14,7 @@ productRouters.delete('/deletes/:user_id', verifyToken, checkOwnership, deleteAl
 productRouters.get('/get-all', verifyToken, getAllProducts);
 productRouters.get('/owner/:user_id', verifyToken, getUserProducts);
 productRouters.get('/total/:user_id', verifyToken, checkOwnership, getUserTotalProducts);
-productRouters.get('/searched', verifyToken, getSearchedProducts);
+productRouters.get('/search', verifyToken, getSearchedProducts);
 productRouters.get('/detail/:_id', verifyToken, getSelectedProduct);
 productRouters.post('/add-product', verifyToken, insertNewProduct);
 productRouters.put('/update/:_id', verifyToken, updateProductDetail);

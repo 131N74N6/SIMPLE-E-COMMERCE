@@ -34,7 +34,7 @@ export async function getAllProducts(req: Request, res: Response): Promise<void>
 
 export async function getSearchedProducts(req: Request, res: Response): Promise<void> {
     try {
-        const { searched } = req.query;
+        const searched = req.query.searched as string;
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 20;
         const skip = (page - 1) * limit;
@@ -49,7 +49,7 @@ export async function getSearchedProducts(req: Request, res: Response): Promise<
             return;
         }
 
-        if (isNaN(limit) || limit < 1 || limit > 12) {
+        if (isNaN(limit) || limit < 1 || limit > 20) {
             res.status(400).json({ message: 'Invalid limit parameter' });
             return;
         }

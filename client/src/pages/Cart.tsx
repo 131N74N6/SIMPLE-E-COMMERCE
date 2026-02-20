@@ -94,7 +94,6 @@ export default function Cart() {
 
     function deleteOneProduct(_id: string) {
         deleteOneMutation.mutate(_id);
-        console.log(`Deleting product with ID: ${_id}`);
     }
 
     function deleteAllProdcuts() {
@@ -115,6 +114,7 @@ export default function Cart() {
             const payload = {
                 customer_id: user.info.id,
                 customer_name: user.info.username,
+                customer_email: user.info.email,
                 product_list: paginatedData.map(item => ({
                     product_images: item.product_images,
                     product_name: item.product_name,

@@ -12,7 +12,7 @@ export function Notification(props: NotificationProps) {
 
 export function Notification2(props: NotificationProps) {
     return (
-        <div className="flex justify-center items-center fixed inset-0 shadow-[0_0_6px_rgba(0,0,0,0.3)] bg-white p-[1.3rem] rounded-[1.3rem] z-20">
+        <div className="flex w-75 h-75 justify-center items-center fixed inset-0 shadow-[0_0_6px_rgba(0,0,0,0.3)] bg-white p-[1.3rem] rounded-[1.3rem] z-20">
             <p className="text-blue-700 mb-4">{props.message_text}</p>
         </div>
     )

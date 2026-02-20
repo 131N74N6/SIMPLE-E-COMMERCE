@@ -117,8 +117,8 @@ export function ProductCardInCart(props: CartProductIntrf) {
                         <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
                     </div>
                     <div className="flex flex-col gap-4">
-                        <h3 className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</h3>
-                        <p className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</p>
+                        <div className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</div>
+                        <div className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</div>
                     </div>
                 </div>
                 <input 

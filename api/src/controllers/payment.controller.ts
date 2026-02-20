@@ -10,10 +10,10 @@ let snap = new midtransClient.Snap({
     clientKey: process.env.MIDTRANS_CLIENT_KEY!,
 });
 
-export async function createTransaction (req: Request, res: Response) {
-    const { customer_id, customer_name, product_list, total_quantity, total_price } = req.body;
+export async function createTransaction(req: Request, res: Response) {
+    const { customer_id, customer_name, customer_email, product_list, total_quantity, total_price } = req.body;
 
-    if (!customer_id || !customer_name || !product_list || !total_quantity || !total_price) {
+    if (!customer_id || !customer_name || !customer_email || !product_list || !total_quantity || !total_price) {
         return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -22,6 +22,7 @@ export async function createTransaction (req: Request, res: Response) {
             created_at: new Date().toISOString(),
             customer_id,
             customer_name,
+            customer_email,
             product_list,
             total_quantity,
             status: 'pending',
@@ -33,6 +34,11 @@ export async function createTransaction (req: Request, res: Response) {
             transaction_details: {
                 order_id: order._id.toString(),
                 gross_amount: total_price,
+            },
+            customer_details: {
+                name: customer_name.split(' ')[0] || customer_name,
+                last_name: customer_name.split(' ').slice(1).join(' ') || '',
+                email: customer_email,
             },
             credit_card: { secure: true },
         };
@@ -50,7 +56,7 @@ export async function createTransaction (req: Request, res: Response) {
     }
 }
 
-export async function handleWebhook (req: Request, res: Response) {
+export async function handleWebhook(req: Request, res: Response) {
     const notification = req.body;
 
     try {

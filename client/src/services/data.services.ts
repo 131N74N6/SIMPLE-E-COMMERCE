@@ -29,6 +29,7 @@ export type TransactionIntrf = {
     _id: string;
     customer_id: string;
     customer_name: string;
+    customer_email: string;
     product_list: {
         product_images: { 
             file_url: string;

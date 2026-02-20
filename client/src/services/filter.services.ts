@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import useAuth from "./auth.services";
 
-export type SearchedPost = {
+export type SearchedProduct = {
     api_url: string;
     limit: number;
     query_key: string[];
@@ -11,9 +11,9 @@ export type SearchedPost = {
 
 export default function FilterHandler() {
     const { user } = useAuth();
-    const token = user ? user.token : null;
+    const token = user ? user.token : '';
     
-    function searchedPost<BIN1999>(props: SearchedPost) {
+    function searchedProduct<TSX>(props: SearchedProduct) {
         const fecthers = async ({ pageParam = 1 }: { pageParam?: number }) => {
             const request = await fetch(`${props.api_url}?searched=${props.searched}&page=${pageParam}&limit=${props.limit}`, {
                 headers: {
@@ -50,7 +50,7 @@ export default function FilterHandler() {
             refetchOnWindowFocus: false,
         });
 
-        const paginatedData: BIN1999[] = data ? data.pages.flat() : [];
+        const paginatedData: TSX[] = data ? data.pages.flat() : [];
         const isReachedEnd = !hasNextPage;
         const isLoadingMore = isFetchingNextPage;
 
@@ -65,5 +65,5 @@ export default function FilterHandler() {
         }
     }
 
-    return { searchedPost }
+    return { searchedProduct }
 }
