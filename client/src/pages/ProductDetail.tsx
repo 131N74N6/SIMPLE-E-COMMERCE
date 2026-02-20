@@ -139,7 +139,7 @@ export function ProductDetail() {
             <Navbar1/>
             <Navbar2/>
             <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full overflow-y-auto">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex md:flex-row flex-col md:items-center md:justify-between gap-4">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white">
                             {selectedProduct?.[0]?.username.charAt(0)}
@@ -164,7 +164,7 @@ export function ProductDetail() {
                             className="bg-orange-400 flex gap-2 items-center cursor-pointer hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium"
                         >
                             <ListPlus color="black" className="mr-1"/>
-                            Add to Cart
+                            {isProductInCart ? 'Already in Cart' : 'Add to Cart'}
                         </button>
                     )}
                 </div>
