@@ -60,7 +60,7 @@ export async function getUserTotalProducts(req: Request, res: Response): Promise
         const getUserProduct = await Cart.find({ user_id: getUserId });
         
         const productTotal = getUserProduct.reduce((total, item) => total + item.product_total, 0);
-        const priceTotal = getUserProduct.reduce((total, product) => total + (product.product_price * product.product_total), 0);
+        const priceTotal = getUserProduct.reduce((total, product) => total + product.product_price, 0);
 
         res.json({ 
             product_total:productTotal, 
@@ -118,14 +118,17 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
 
 export async function updateCartProduct(req: Request, res: Response): Promise<void> {
     try {
+        const getCartProduct = await Cart.find({ _id: req.params._id });
+
         if (req.body.product_total < 1) {
             res.status(400).json({ message: 'total produk minimal 1' });
             return;
         }
 
-        await Cart.updateOne({ _id: req.params._id }, {
+        await Cart.updateOne({ _id: getCartProduct[0]._id }, {
             $set: {
-                product_total: req.body.product_total
+                product_total: req.body.product_total,
+                product_price: getCartProduct[0].product_price * req.body.product_total,
             }
         });
         res.status(200).json({ message: 'cart product successfuly updated' });

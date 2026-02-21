@@ -27,9 +27,18 @@ export type InputDataIntrf<Y> = {
 
 export type TransactionIntrf = {
     _id: string;
-    customer_id: string;
-    customer_name: string;
-    customer_email: string;
+    created_at: string;
+    customer_data: {
+        customer_id: string;
+        customer_firstname: string;
+        customer_lastname: string;
+        customer_phone: string;
+        customer_email: string;
+        customer_address: string;
+        customer_city: string;
+        customer_postal_code: string;
+        customer_country_code: string;
+    };
     product_list: {
         product_images: { 
             file_url: string;
@@ -206,23 +215,29 @@ export function DataController() {
     }
 
     async function createTransaction(props: Omit<TransactionIntrf, '_id'>) {
-        const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
-            body: JSON.stringify(props),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            method: 'POST'
-        });
-    
-        const response = await request.json();
+        try {
+            const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
+                body: JSON.stringify(props),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                method: 'POST'
+            });
+        
+            const response = await request.json();
 
-        if (!request.ok) {
-            setMessage(response.message);
+            if (!request.ok) {
+                console.error('API Error:', response);
+                setMessage(response.message);
+                return null;
+            } else {
+                setMessage(null);
+                return response;
+            }
+        } catch (error) {
+            setMessage('Network Error');
             return null;
-        } else {
-            setMessage(null);
-            return response;
         }
     }
     

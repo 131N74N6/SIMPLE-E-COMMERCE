@@ -41,8 +41,8 @@ export function CartProductList(props: CartListIntrf) {
     }
 
     return (
-        <section className="gap-4 flex flex-col overflow-y-auto">
-            <div className="flex flex-col gap-4 overflow-y-auto">
+        <section className="gap-4 flex flex-col">
+            <div className="flex flex-col gap-4">
                 {props.data.map((product) => (
                     <ProductCardInCart 
                         key={product._id} 

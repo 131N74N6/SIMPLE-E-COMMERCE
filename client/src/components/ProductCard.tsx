@@ -113,7 +113,7 @@ export function ProductCardInCart(props: CartProductIntrf) {
         return (
             <form className="border-blue-300 border rounded p-[0.45rem] flex flex-col gap-4" onSubmit={handleSave}>
                 <div className="flex gap-4 md:flex-row flex-col">
-                    <div className="rounded-lg relative w-50 h-50">
+                    <div className="rounded-lg relative w-30 h-30">
                         <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
                     </div>
                     <div className="flex flex-col gap-4">
@@ -163,37 +163,37 @@ export function ProductCardInCart(props: CartProductIntrf) {
                 </div>
             </div>
             <div className="flex gap-4 md:flex-row flex-col">
-                <div className="rounded-lg relative w-50 h-50">
+                <div className="rounded-lg relative w-30 h-30">
                     <img src={props.product_images[0].file_url} className="object-cover w-full h-full"/>
                 </div>
                 <div className="flex flex-col gap-2">
                     <div className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">{props.product_name}</div>
                     <div className="line-clamp-1 text-blue-400 text-[0.9rem] font-medium">IDR {props.product_price}</div>
                     <div className="text-blue-400 text-[0.9rem] font-medium">{props.product_total}</div>
+                    <div className="flex flex-row gap-4">
+                        <button 
+                            type="button" 
+                            className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
+                            onClick={() => props.onRemove(props._id)}
+                        >
+                            <Trash size={19}/>
+                        </button>
+                        <button 
+                            type="button" 
+                            className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
+                            onClick={() => navigate(`/product-detail/${props.product_id}`)}
+                        >
+                            <Info size={19}/>
+                        </button>
+                        <button 
+                            type="button" 
+                            className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
+                            onClick={() => props.onSelect(props._id)}
+                        >
+                            <PencilLine size={19}/>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div className="flex flex-row gap-4">
-                <button 
-                    type="button" 
-                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
-                    onClick={() => props.onRemove(props._id)}
-                >
-                    <Trash size={19}/>
-                </button>
-                <button 
-                    type="button" 
-                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
-                    onClick={() => navigate(`/product-detail/${props.product_id}`)}
-                >
-                    <Info size={19}/>
-                </button>
-                <button 
-                    type="button" 
-                    className="text-blue-400 bg-transparent font-medium text-[0.9rem] cursor-pointer hover:text-blue-500" 
-                    onClick={() => props.onSelect(props._id)}
-                >
-                    <PencilLine size={19}/>
-                </button>
             </div>
         </div>
     );

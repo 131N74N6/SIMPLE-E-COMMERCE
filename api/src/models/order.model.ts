@@ -2,9 +2,17 @@ import mongoose, { Schema, Types } from 'mongoose';
 
 export type OrderIntrf = {
     created_at: string;
-    customer_id: Types.ObjectId;
-    customer_name: string;
-    customer_email: string;
+    customer_data: {
+        customer_id: Types.ObjectId;
+        customer_firstname: string;
+        customer_lastname: string;
+        customer_phone: string;
+        customer_email: string;
+        customer_address: string;
+        customer_city: string;
+        customer_postal_code: string;
+        customer_country_code: string;
+    };
     product_list: {
         product_images: { 
             file_url: string;
@@ -26,9 +34,17 @@ export type OrderIntrf = {
 
 const orderSchema = new Schema<OrderIntrf>({
     created_at: { type: String, required: true },
-    customer_id: { type: Schema.Types.ObjectId, required: true },
-    customer_name: { type: String, required: true },
-    customer_email: { type: String, required: true },
+    customer_data: {
+        customer_id: { type: Schema.Types.ObjectId, required: true },
+        customer_firstname: { type: String, required: true },
+        customer_lastname: { type: String, required: true },
+        customer_phone: { type: String, required: true },
+        customer_email: { type: String, required: true },
+        customer_address: { type: String, required: true },
+        customer_city: { type: String, required: true },
+        customer_postal_code: { type: String, required: true },
+        customer_country_code: { type: String, required: true },
+    },
     product_list: [{
         product_images: [{ 
             file_url: { type: String, required: true },

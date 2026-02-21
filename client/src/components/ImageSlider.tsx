@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface ProductImageIntrf {
     images: { file_url: string; }[];
@@ -18,7 +19,7 @@ export default function ImageSlider(props: ProductImageIntrf) {
     if (props.images.length === 0) return null;
 
     return (
-        <div className="relative w-full h-96 bg-gray-900 rounded-lg overflow-hidden">
+        <div className="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
             <img 
                 src={props.images[currentIndex].file_url} 
                 alt={`Slide ${currentIndex + 1}`}
@@ -32,14 +33,14 @@ export default function ImageSlider(props: ProductImageIntrf) {
                         onClick={goToPrevious}
                         className="absolute cursor-pointer left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
                     >
-                        <i className="fa-solid fa-square-caret-left"></i>
+                        <ArrowLeft className="w-4 h-4" />
                     </button>
                     <button
                         type="button"
                         onClick={goToNext}
                         className="absolute cursor-pointer right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
                     >
-                        <i className="fa-solid fa-square-caret-right"></i>
+                        <ArrowRight className="w-4 h-4" />
                     </button>
                     
                     <div className="absolute bottom-2 left-0 right-0 flex justify-center space-x-1">

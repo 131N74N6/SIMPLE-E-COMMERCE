@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Notification2 } from '../components/Notification';
 import useAuth from '../services/auth.services';
+import { CustomerInfo } from '../components/CustomerInfo';
 
 declare global {
     interface Window {
@@ -29,6 +30,15 @@ export default function Cart() {
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [customerData, setCustomerData] = useState({
+        customer_firstname: '',
+        customer_lastname: '',
+        customer_phone: '',
+        customer_address: '',
+        customer_city: '',
+        customer_postal_code: '',
+        customer_country_code: '',
+    });
 
     useEffect(() => {
         if (message) {
@@ -49,6 +59,11 @@ export default function Cart() {
         limit: 20,
         stale_time: 600000,
     });
+
+    function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = e.target;
+        setCustomerData(prev => ({ ...prev, [name]: value }));
+    }
 
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
@@ -114,15 +129,24 @@ export default function Cart() {
             if (!user) return;
 
             const payload = {
-                customer_id: user.info.id,
-                customer_name: user.info.username,
-                customer_email: user.info.email,
+                created_at: new Date().toISOString(),
+                customer_data: {
+                    customer_id: user.info.id,
+                    customer_firstname: customerData.customer_firstname.trim(),
+                    customer_lastname: customerData.customer_lastname.trim(),
+                    customer_phone: customerData.customer_phone.trim(),
+                    customer_email: user.info.email,
+                    customer_address: customerData.customer_address.trim(),
+                    customer_city: customerData.customer_city.trim(),
+                    customer_postal_code: customerData.customer_postal_code.trim(),
+                    customer_country_code: customerData.customer_country_code.trim(),
+                },
                 product_list: paginatedData.map(item => ({
                     product_images: item.product_images,
                     product_name: item.product_name,
                     product_price: item.product_price,
-                    product_total: item.product_total,
                     product_id: item._id,
+                    product_total: item.product_total,
                     seller_id: item.seller_id,
                     seller_name: item.seller_name,
                 })),
@@ -183,17 +207,35 @@ export default function Cart() {
                         <div className="text-white font-bold">Total Price: IDR {cartStats ? cartStats.price_total : 0}</div>
                     </div>
                 </div>
-                <CartProductList 
-                    data={paginatedData} 
-                    loadMore={isLoadMore} 
-                    isReachedEnd={isReachedEnd} 
-                    isUpdating={isUpdating}
-                    selectedId={selectedId} 
-                    setSize={fetchNextPage} 
-                    onRemove={deleteOneProduct} 
-                    onSelect={handleSelect}
-                    onUpdate={handleUpdateTotal}
-                />
+                <div className='overflow-y-auto flex flex-col gap-4'>
+                    <CartProductList 
+                        data={paginatedData} 
+                        loadMore={isLoadMore} 
+                        isReachedEnd={isReachedEnd} 
+                        isUpdating={isUpdating}
+                        selectedId={selectedId} 
+                        setSize={fetchNextPage} 
+                        onRemove={deleteOneProduct} 
+                        onSelect={handleSelect}
+                        onUpdate={handleUpdateTotal}
+                    />
+                    <CustomerInfo
+                        customer_firstname={customerData.customer_firstname}
+                        customer_lastname={customerData.customer_lastname}
+                        customer_phone={customerData.customer_phone}
+                        customer_address={customerData.customer_address}
+                        customer_city={customerData.customer_city}
+                        customer_postal_code={customerData.customer_postal_code}
+                        customer_country_code={customerData.customer_country_code}
+                        handleFirstnameChange={handleInputChange}
+                        handleLastnameChange={handleInputChange}
+                        handlePhoneChange={handleInputChange}
+                        handleAddressChange={handleInputChange}
+                        handleCityChange={handleInputChange}
+                        handlePostalCodeChange={handleInputChange}
+                        handleCountryCodeChange={handleInputChange}
+                    />
+                </div>
             </div>
         </div>
     );

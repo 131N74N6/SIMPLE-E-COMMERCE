@@ -11,21 +11,23 @@ let snap = new midtransClient.Snap({
 });
 
 export async function createTransaction(req: Request, res: Response) {
-    const { customer_id, customer_name, customer_email, product_list, total_quantity, total_price } = req.body;
+    const { created_at, customer_data, product_list, total_quantity, total_price } = req.body;
 
-    if (!customer_id || !customer_name || !customer_email || !product_list || !total_quantity || !total_price) {
+    if (!created_at || !customer_data || !product_list || !total_quantity || !total_price) {
         return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    if (total_price <= 0) {
+        return res.status(400).json({ message: 'Total price must be greater than 0' });
     }
 
     try {
         const order = new Order({
-            created_at: new Date().toISOString(),
-            customer_id,
-            customer_name,
-            customer_email,
+            created_at,
+            customer_data,
             product_list,
-            total_quantity,
             status: 'pending',
+            total_quantity,
             total_price,
         });
         await order.save();
@@ -36,9 +38,30 @@ export async function createTransaction(req: Request, res: Response) {
                 gross_amount: total_price,
             },
             customer_details: {
-                name: customer_name.split(' ')[0] || customer_name,
-                last_name: customer_name.split(' ').slice(1).join(' ') || '',
-                email: customer_email,
+                first_name: customer_data.customer_firstname,
+                last_name: customer_data.customer_lastname,
+                email: customer_data.customer_email,
+                phone: customer_data.customer_phone,
+                billing_address: {
+                    first_name: customer_data.customer_firstname,
+                    last_name: customer_data.customer_lastname,
+                    email: customer_data.customer_email,
+                    phone: customer_data.customer_phone,
+                    address: customer_data.customer_address,
+                    city: customer_data.customer_city,
+                    postal_code: customer_data.customer_postal_code,
+                    country_code: customer_data.customer_country_code
+                },
+                shipping_address: {
+                    first_name: customer_data.customer_firstname,
+                    last_name: customer_data.customer_lastname,
+                    email: customer_data.customer_email,
+                    phone: customer_data.customer_phone,
+                    address: customer_data.customer_address,
+                    city: customer_data.customer_city,
+                    postal_code: customer_data.customer_postal_code,
+                    country_code: customer_data.customer_country_code
+                }
             },
             credit_card: { secure: true },
         };
@@ -90,7 +113,7 @@ export async function handleWebhook(req: Request, res: Response) {
                 transaction_id: notification.transaction_id,
             },
             status: notification.transaction_status, // 'settlement', 'cancel', 'expire', dll
-            user_id: order.customer_id, // user_id = customer_id
+            user_id: order.customer_data.customer_id, // user_id = customer_id
             order_id: order._id,
         });
         
