@@ -34,7 +34,7 @@ export type CartListIntrf = {
 export function CartProductList(props: CartListIntrf) {
     if (props.data.length === 0) {
         return (
-            <div className="flex flex-col gap-4 justify-center items-center h-full">
+            <div className="flex flex-col gap-4 justify-center items-center min-h-150">
                 <p className="text-white">No products available</p>
             </div>
         );

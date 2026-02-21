@@ -61,42 +61,54 @@ export function DataController() {
     const [message, setMessage] = useState<string | null>(null);
     
     async function deleteData(api_url: string) {
-        const request = await fetch(api_url, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'DELETE'
-        });
+        try {
+            const request = await fetch(api_url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
 
-        const response = await request.json();
+            const response = await request.json();
 
-        if (!request.ok) {
-            setMessage(response.message);
+            if (request.ok) {
+                return response;
+            } else {
+                setMessage(response.message);
+                return;
+            }
+        } catch (error) {
+            setMessage('Network Error');
             return;
         }
-
-        return response;
     }
 
     async function deleteChosenData(api_url: string, data: string[]) {
-        const request = await fetch(api_url, {
-            body: JSON.stringify({ publicIds: data }),
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'DELETE'
-        });
+        try {
+            const request = await fetch(api_url, {
+                body: JSON.stringify({ publicIds: data }),
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
 
-        const response = await request.json();
+            const response = await request.json();
 
-        if (!request.ok) {
-            setMessage(response.message);
+            if (request.ok) {
+                setMessage(null);
+                return response;
+            } else {
+                setMessage(response.message);
+                return;
+            }
+
+        } catch (error) {
+            setMessage('Network Error');
             return;
         }
-
-        return response;
     }
 
     function getData<BIN1999>(props: GetDataIntrf) {
@@ -175,43 +187,55 @@ export function DataController() {
     }
 
     async function insertData<BIN1999>(props: InputDataIntrf<BIN1999>) {
-        const request = await fetch(props.api_url, {
-            body: JSON.stringify(props.data),
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-        });
+        try {
+            const request = await fetch(props.api_url, {
+                body: JSON.stringify(props.data),
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+            });
 
-        const response = await request.json();
+            const response = await request.json();
 
-        if (!request.ok) {
-            setMessage(response.message);
+            if (request.ok) {
+                setMessage(null);
+                return response;
+            } else {
+                setMessage(response.message);
+                return;
+            }
+        } catch (error) {
+            setMessage('Network Error');
             return;
         }
-
-        return response;
     }
 
     async function updateData<BIN1999>(props: ChangeDataIntrf<BIN1999>) {
-        const request = await fetch(props.api_url, {
-            body: JSON.stringify(props.data),
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'PUT',
-        });
+        try {
+            const request = await fetch(props.api_url, {
+                body: JSON.stringify(props.data),
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT',
+            });
 
-        const response = await request.json();
+            const response = await request.json();
 
-        if (!request.ok) {
-            setMessage(response.message);
+            if (request.ok) {
+                setMessage(null);
+                return response;
+            } else {
+                setMessage(response.message);
+                return;
+            }
+        } catch (error) {
+            setMessage('Network Error');
             return;
         }
-
-        return response;
     }
 
     async function createTransaction(props: Omit<TransactionIntrf, '_id'>) {
@@ -227,13 +251,12 @@ export function DataController() {
         
             const response = await request.json();
 
-            if (!request.ok) {
-                console.error('API Error:', response);
-                setMessage(response.message);
-                return null;
-            } else {
+            if (request.ok) {
                 setMessage(null);
                 return response;
+            } else {
+                setMessage(response.message);
+                return;
             }
         } catch (error) {
             setMessage('Network Error');

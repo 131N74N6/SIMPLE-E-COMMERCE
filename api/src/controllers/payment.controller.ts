@@ -37,6 +37,13 @@ export async function createTransaction(req: Request, res: Response) {
                 order_id: order._id.toString(),
                 gross_amount: total_price,
             },
+            credit_card: { secure: true },
+            item_details: product_list.map((item: any) => ({
+                id: item.product_id.toString(),
+                price: item.product_price,
+                quantity: item.product_total,
+                name: item.product_name.length > 50 ? `${item.product_name.substring(0, 40)}...`: item.product_name,
+            })),
             customer_details: {
                 first_name: customer_data.customer_firstname,
                 last_name: customer_data.customer_lastname,
@@ -62,8 +69,7 @@ export async function createTransaction(req: Request, res: Response) {
                     postal_code: customer_data.customer_postal_code,
                     country_code: customer_data.customer_country_code
                 }
-            },
-            credit_card: { secure: true },
+            }
         };
 
         const transaction = await snap.createTransaction(parameter);

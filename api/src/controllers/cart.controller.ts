@@ -101,7 +101,7 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
         }
 
         await Cart.deleteMany({ user_id: req.params.user_id });
-        res.status(200).json({ message: 'all products in cart successfuly deleted' });
+        res.status(200).json({ message: 'Semua produk berhasil dihapus dari keranjang.' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

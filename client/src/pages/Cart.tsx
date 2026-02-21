@@ -71,7 +71,6 @@ export default function Cart() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
-            queryClient.invalidateQueries({ queryKey: [`cart-check-${user_id}`] });
         },
         onSettled: () => setIsDeleting(false)
     });
@@ -82,7 +81,6 @@ export default function Cart() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
-            queryClient.invalidateQueries({ queryKey: [`cart-check-${user_id}`] });
         },
         onSettled: () => setIsDeleting(false)
     });
