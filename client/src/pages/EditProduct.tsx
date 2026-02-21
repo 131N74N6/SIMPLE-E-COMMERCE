@@ -103,6 +103,7 @@ export default function EditProduct() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
+            queryClient.invalidateQueries({ queryKey: [`cart-items-${currentUserId}`]});
             queryClient.invalidateQueries({ queryKey: [`edit-product-details-${_id}`] });
             navigate(`/your-shop/${currentUserId}`);
         },

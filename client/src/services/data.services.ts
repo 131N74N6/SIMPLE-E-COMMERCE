@@ -80,7 +80,6 @@ export function DataController() {
             }
         } catch (error) {
             setMessage('Network Error');
-            return;
         }
     }
 
@@ -104,10 +103,8 @@ export function DataController() {
                 setMessage(response.message);
                 return;
             }
-
         } catch (error) {
             setMessage('Network Error');
-            return;
         }
     }
 
@@ -198,17 +195,17 @@ export function DataController() {
             });
 
             const response = await request.json();
-
+            
             if (request.ok) {
                 setMessage(null);
                 return response;
             } else {
                 setMessage(response.message);
-                return;
+                throw new Error(response.message);
             }
-        } catch (error) {
-            setMessage('Network Error');
-            return;
+        } catch (error: any) {
+            setMessage(error.message || 'Network Error');
+            throw error; 
         }
     }
 
@@ -234,7 +231,6 @@ export function DataController() {
             }
         } catch (error) {
             setMessage('Network Error');
-            return;
         }
     }
 
@@ -260,7 +256,6 @@ export function DataController() {
             }
         } catch (error) {
             setMessage('Network Error');
-            return null;
         }
     }
     

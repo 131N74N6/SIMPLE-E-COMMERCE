@@ -97,16 +97,13 @@ export function AddProduct() {
                 }
             });
         },
-        onError: () => {
-            setIsUploading(false);
-        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-products'] });
             queryClient.invalidateQueries({ queryKey: [`your-products-${currentUserId}`] });
-            navigate(`/your-shop/${currentUserId}`);
         },
         onSettled: () => {
             if (imageInputRef.current) imageInputRef.current.value = '';
+            if (!message) navigate(`/your-shop/${currentUserId}`);
             setIsUploading(false);
             setProduct({ product_description: '', product_name: '', product_price: '', product_stock: '' });
             setMediaFiles([]);
