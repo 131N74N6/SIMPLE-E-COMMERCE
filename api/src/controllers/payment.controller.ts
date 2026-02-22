@@ -14,11 +14,13 @@ export async function createTransaction(req: Request, res: Response) {
     const { created_at, customer_data, product_list, total_quantity, total_price } = req.body;
 
     if (!created_at || !customer_data || !product_list || !total_quantity || !total_price) {
-        return res.status(400).json({ message: 'Missing required fields' });
+        res.status(400).json({ message: 'Missing required fields' });
+        return;
     }
 
     if (total_price <= 0) {
-        return res.status(400).json({ message: 'Total price must be greater than 0' });
+        res.status(400).json({ message: 'Total price must be greater than 0' });
+        return;
     }
 
     try {
@@ -94,7 +96,6 @@ export async function handleWebhook(req: Request, res: Response) {
 
         if (!order) return res.status(404).json({ message: 'Order not found' });
 
-        // Update status order
         order.status = notification.transaction_status;
         await order.save();
 
@@ -107,7 +108,6 @@ export async function handleWebhook(req: Request, res: Response) {
             }
         }
 
-        // Simpan data pembayaran ke collection Payment
         const payment = new Payment({
             created_at: new Date().toISOString(),
             amount: notification.gross_amount,

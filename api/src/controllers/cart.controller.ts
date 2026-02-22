@@ -84,8 +84,8 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
 export async function isProductInCart(req: Request, res: Response): Promise<void> {
     try {
         const { user_id, product_id } = req.query;
-        const isProductExist = await Cart.findOne({ user_id, product_id });
-        res.json(!!isProductExist);
+        const isProductExist = await Cart.find({ user_id: user_id, product_id: product_id });
+        res.json(!!isProductExist.length);
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }
