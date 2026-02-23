@@ -68,6 +68,7 @@ export default function Cart() {
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
         mutationFn: async (_id: string) => await deleteData(`${import.meta.env.VITE_API_BASE_URL}/cart/delete/${_id}`),
+        onError: () => {},
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
@@ -79,6 +80,7 @@ export default function Cart() {
     const deleteAllMutation = useMutation({
         onMutate: () => setIsDeleting(true),
         mutationFn: async () => await deleteData(`${import.meta.env.VITE_API_BASE_URL}/cart/deletes/${user_id}`),
+        onError: () => {},
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
@@ -95,6 +97,7 @@ export default function Cart() {
                 data: { product_total: cartData.product_total }
             });
         },
+        onError: () => {},
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });

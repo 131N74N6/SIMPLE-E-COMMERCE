@@ -57,8 +57,7 @@ export async function getSearchBoughtProducts(req: Request, res: Response) {
         const skip = (page - 1) * limit;
         
         if (!searched || typeof searched !== 'string') {
-            res.status(400).json({ message: 'Search query is required' });
-            return;
+            return res.status(400).json({ message: 'Search query is required' });
         }
 
         const getProducts = await PurchaseHistory.find(

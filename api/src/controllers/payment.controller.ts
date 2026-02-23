@@ -14,13 +14,11 @@ export async function createTransaction(req: Request, res: Response) {
     const { created_at, customer_data, product_list, total_quantity, total_price } = req.body;
 
     if (!created_at || !customer_data || !product_list || !total_quantity || !total_price) {
-        res.status(400).json({ message: 'Missing required fields' });
-        return;
+        return res.status(400).json({ message: 'Missing required fields' });
     }
 
     if (total_price <= 0) {
-        res.status(400).json({ message: 'Total price must be greater than 0' });
-        return;
+        return res.status(400).json({ message: 'Total price must be greater than 0' });
     }
 
     try {

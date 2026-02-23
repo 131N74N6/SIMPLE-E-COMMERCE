@@ -72,14 +72,16 @@ export function DataController() {
 
             const response = await request.json();
 
-            if (request.ok) {
-                return response;
-            } else {
+            if (!request.ok) {
                 setMessage(response.message);
-                return;
+                throw new Error(response.message);
+            } else {
+                setMessage(null);
+                return response;
             }
-        } catch (error) {
-            setMessage('Network Error');
+        } catch (error: any) {
+            setMessage(error.message || 'Network Error');
+            throw error;
         }
     }
 
@@ -96,15 +98,16 @@ export function DataController() {
 
             const response = await request.json();
 
-            if (request.ok) {
+            if (!request.ok) {
+                setMessage(response.message);
+                throw new Error(response.message);
+            } else {
                 setMessage(null);
                 return response;
-            } else {
-                setMessage(response.message);
-                return;
             }
-        } catch (error) {
-            setMessage('Network Error');
+        } catch (error: any) {
+            setMessage(error.message || 'Network Error');
+            throw error;
         }
     }
 
@@ -196,16 +199,16 @@ export function DataController() {
 
             const response = await request.json();
             
-            if (request.ok) {
-                setMessage(null);
-                return response;
-            } else {
+            if (!request.ok) {
                 setMessage(response.message);
                 throw new Error(response.message);
+            } else {
+                setMessage(null);
+                return response;
             }
         } catch (error: any) {
             setMessage(error.message || 'Network Error');
-            throw error; 
+            throw error;
         }
     }
 
@@ -222,21 +225,22 @@ export function DataController() {
 
             const response = await request.json();
 
-            if (request.ok) {
+            if (!request.ok) {
+                setMessage(response.message);
+                throw new Error(response.message);
+            } else {
                 setMessage(null);
                 return response;
-            } else {
-                setMessage(response.message);
-                return;
             }
-        } catch (error) {
-            setMessage('Network Error');
+        } catch (error: any) {
+            setMessage(error.message || 'Network Error');
+            throw error;
         }
     }
 
     async function createTransaction(props: Omit<TransactionIntrf, '_id'>) {
         try {
-            const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
+            const request = await fetch(`${import.meta.env.VITE_API_BASE_URL}/payment/create-transaction`, {
                 body: JSON.stringify(props),
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -247,15 +251,16 @@ export function DataController() {
         
             const response = await request.json();
 
-            if (request.ok) {
+            if (!request.ok) {
+                setMessage(response.message);
+                throw new Error(response.message);
+            } else {
                 setMessage(null);
                 return response;
-            } else {
-                setMessage(response.message);
-                return;
             }
-        } catch (error) {
-            setMessage('Network Error');
+        } catch (error: any) {
+            setMessage(error.message || 'Network Error');
+            throw error;
         }
     }
     

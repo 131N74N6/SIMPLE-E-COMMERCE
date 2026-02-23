@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export async function getSearchedProducts(req: Request, res: Response): Promise<void> {
+export async function getSearchedProducts(req: Request, res: Response) {
     try {
         const { searched } = req.query;
         const page = parseInt(req.query.page as string) || 1;
@@ -12,18 +12,15 @@ export async function getSearchedProducts(req: Request, res: Response): Promise<
         const skip = (page - 1) * limit;
         
         if (!searched || typeof searched !== 'string') {
-            res.status(400).json({ message: 'Search query is required' });
-            return;
+            return res.status(400).json({ message: 'Search query is required' });
         }
 
         if (isNaN(page) || page < 1) {
-            res.status(400).json({ message: 'Invalid page parameter' });
-            return;
+            return res.status(400).json({ message: 'Invalid page parameter' });
         }
 
         if (isNaN(limit) || limit < 1 || limit > 12) {
-            res.status(400).json({ message: 'Invalid limit parameter' });
-            return;
+            return res.status(400).json({ message: 'Invalid limit parameter' });
         }
 
         const searchedPost = await Cart.find(
@@ -37,7 +34,7 @@ export async function getSearchedProducts(req: Request, res: Response): Promise<
     }
 }
 
-export async function getUserProducts(req: Request, res: Response): Promise<void> {
+export async function getUserProducts(req: Request, res: Response) {
     try {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 20;
@@ -54,7 +51,7 @@ export async function getUserProducts(req: Request, res: Response): Promise<void
     }
 }
 
-export async function getUserTotalProducts(req: Request, res: Response): Promise<void> {
+export async function getUserTotalProducts(req: Request, res: Response) {
     try {
         const getUserId = req.params.user_id;
         const getUserProduct = await Cart.find({ user_id: getUserId });
@@ -71,7 +68,7 @@ export async function getUserTotalProducts(req: Request, res: Response): Promise
     }
 }
 
-export async function insertNewProduct(req: Request, res: Response): Promise<void> {
+export async function insertNewProduct(req: Request, res: Response) {
     try {
         const newPost = new Cart(req.body);
         await newPost.save();
@@ -81,7 +78,7 @@ export async function insertNewProduct(req: Request, res: Response): Promise<voi
     }
 }
 
-export async function isProductInCart(req: Request, res: Response): Promise<void> {
+export async function isProductInCart(req: Request, res: Response) {
     try {
         const { user_id, product_id } = req.query;
         const isProductExist = await Cart.find({ user_id: user_id, product_id: product_id });
@@ -91,13 +88,12 @@ export async function isProductInCart(req: Request, res: Response): Promise<void
     }
 }
 
-export async function deleteAllProducts(req: Request, res: Response): Promise<void> {
+export async function deleteAllProducts(req: Request, res: Response) {
     try {
         const cartProducts = await Cart.find({ user_id: req.params.user_id });
 
         if (cartProducts.length === 0) {
-            res.status(404).json({ message: 'Produk tidak ditemukan.' });
-            return;
+            return res.status(404).json({ message: 'Produk tidak ditemukan.' });
         }
 
         await Cart.deleteMany({ user_id: req.params.user_id });
@@ -107,7 +103,7 @@ export async function deleteAllProducts(req: Request, res: Response): Promise<vo
     }
 }
 
-export async function deleteOneProduct(req: Request, res: Response): Promise<void> {
+export async function deleteOneProduct(req: Request, res: Response) {
     try {
         await Cart.deleteOne({ _id : req.params._id });
         res.status(200).json({ message: 'products in cart successfuly deleted' });
@@ -116,13 +112,12 @@ export async function deleteOneProduct(req: Request, res: Response): Promise<voi
     }
 }
 
-export async function updateCartProduct(req: Request, res: Response): Promise<void> {
+export async function updateCartProduct(req: Request, res: Response) {
     try {
         const getCartProduct = await Cart.find({ _id: req.params._id });
 
         if (req.body.product_total < 1) {
-            res.status(400).json({ message: 'total produk minimal 1' });
-            return;
+            return res.status(400).json({ message: 'total produk minimal 1' });
         }
 
         await Cart.updateOne({ _id: getCartProduct[0]._id }, {
