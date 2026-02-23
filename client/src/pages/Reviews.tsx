@@ -8,7 +8,7 @@ export function Reviews() {
     const { _id } = useParams();
     const { infiniteScroll } = DataController();
     const { paginatedData, isReachedEnd, isLoadMore, fetchNextPage } = infiniteScroll<ReviewCardIntrf>({
-        api_url: `http://localhost:1234/api/review/get/${_id}`,
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/review/get/${_id}`,
         limit: 20,
         query_key: [`product-reviews-${_id}`],
         stale_time: 600000

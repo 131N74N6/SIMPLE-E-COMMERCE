@@ -45,8 +45,10 @@ export default function useAuth() {
                 return;
             }
 
-            const request = await fetch(`http://localhost:1234/api/auth/sign-in`, {
-                headers: { 'Content-Type': 'application/json' },
+            const request = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/sign-in`, {
+                headers: { 
+                    'Content-Type': 'application/json', 
+                },
                 body: JSON.stringify({ password, username }),
                 method: 'POST',
                 signal
@@ -86,8 +88,10 @@ export default function useAuth() {
                 return;
             }
 
-            const request = await fetch(`http://localhost:1234/api/auth/sign-up`, {
-                headers: { 'Content-Type': 'application/json' },
+            const request = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/sign-up`, {
+                headers: { 
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({ created_at, email, password, username }),
                 method: 'POST',
                 signal

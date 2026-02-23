@@ -57,13 +57,13 @@ export function ProductDetail() {
     const currentUserId = user ? user.info.id : '';
     
     const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
-        api_url: `http://localhost:1234/api/product/detail/${_id}`,
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/product/detail/${_id}`,
         query_key: [`product-details-${_id}`],
         stale_time: 600000
     });
 
     const { data: isProductInCart } = getData<boolean>({
-        api_url: `http://localhost:1234/api/cart/check?user_id=${currentUserId}&product_id=${_id}`,
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/check?user_id=${currentUserId}&product_id=${_id}`,
         query_key: [`check-cart-${currentUserId}-${_id}`],
         stale_time: 600000
     });
@@ -76,7 +76,7 @@ export function ProductDetail() {
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
             await insertData<CartDetailIntrf>({
-                api_url: 'http://localhost:1234/api/cart/add',
+                api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/add`,
                 data: {
                     created_at: new Date().toISOString(),
                     product_images: selectedProduct ? selectedProduct[0].product_images : [],
@@ -103,7 +103,7 @@ export function ProductDetail() {
         onMutate: () => setIsUploading(true),
         mutationFn: async () => {
             await insertData<ReviewIntrf>({
-                api_url: 'http://localhost:1234/api/review/make',
+                api_url: `${import.meta.env.VITE_API_BASE_URL}/review/make`,
                 data: {
                     created_at: new Date().toISOString(),
                     product_review: comment.trim(),

@@ -9,7 +9,7 @@ export default function SearchProduct() {
     const { searchedProduct } = FilterHandler();
 
     const { paginatedData, isLoadingMore, isReachedEnd, fetchNextPage } = searchedProduct<CustomerProductIntrf>({
-        api_url: 'http://localhost:1234/api/product/search',
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/product/search`,
         query_key: [`search-products-${searchQuery}`],
         limit: 20,
         searched: searchQuery,

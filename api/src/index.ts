@@ -1,3 +1,8 @@
+import dns from 'node:dns/promises'; // Import modul dns
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+console.log('DNS servers set to Cloudflare (1.1.1.1) and Google (8.8.8.8)');
+
 import express from "express";
 import { db } from "./database/mongodb";
 import cors from "cors";

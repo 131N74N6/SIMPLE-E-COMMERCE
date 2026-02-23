@@ -48,13 +48,13 @@ export default function Cart() {
     }, [message]);
     
     const { data: cartStats } = getData<CartStatIntrf>({
-        api_url: `http://localhost:1234/api/cart/total/${user_id}`,
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/total/${user_id}`,
         query_key: [`cart-stats-${user_id}`],
         stale_time: 600000,
     });
 
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
-        api_url: `http://localhost:1234/api/cart/get/${user_id}`,
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/get/${user_id}`,
         query_key: [`cart-items-${user_id}`],
         limit: 20,
         stale_time: 600000,
@@ -67,7 +67,7 @@ export default function Cart() {
 
     const deleteOneMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async (_id: string) => await deleteData(`http://localhost:1234/api/cart/delete/${_id}`),
+        mutationFn: async (_id: string) => await deleteData(`${import.meta.env.VITE_API_BASE_URL}/cart/delete/${_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
@@ -78,7 +78,7 @@ export default function Cart() {
 
     const deleteAllMutation = useMutation({
         onMutate: () => setIsDeleting(true),
-        mutationFn: async () => await deleteData(`http://localhost:1234/api/cart/deletes/${user_id}`),
+        mutationFn: async () => await deleteData(`${import.meta.env.VITE_API_BASE_URL}/cart/deletes/${user_id}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [`cart-items-${user_id}`] });
             queryClient.invalidateQueries({ queryKey: [`cart-stats-${user_id}`] });
@@ -91,7 +91,7 @@ export default function Cart() {
         onMutate: () => setIsUpdating(true),
         mutationFn: async (cartData: Pick<CartProductIntrf, '_id' | 'product_total'>) => {
             await updateData<CartProductIntrf>({
-                api_url: `http://localhost:1234/api/cart/update/${cartData._id}`,
+                api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/update/${cartData._id}`,
                 data: { product_total: cartData.product_total }
             });
         },

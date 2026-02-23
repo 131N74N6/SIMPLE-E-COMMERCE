@@ -239,8 +239,8 @@ export function DataController() {
             const request = await fetch('http://localhost:1234/api/payment/create-transaction', {
                 body: JSON.stringify(props),
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 },
                 method: 'POST'
             });

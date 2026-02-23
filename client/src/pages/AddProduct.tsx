@@ -84,7 +84,7 @@ export function AddProduct() {
             }
 
             await insertData<ProductDetailIntrf>({
-                api_url: 'http://localhost:1234/api/product/add-product',
+                api_url: `${import.meta.env.VITE_API_BASE_URL}/product/add-product`,
                 data: {
                     created_at: currentDate,
                     product_description: product.product_description.trim(),

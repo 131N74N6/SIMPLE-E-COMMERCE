@@ -7,7 +7,7 @@ export default function Home() {
     const { infiniteScroll } = DataController();
 
     const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CustomerProductIntrf>({
-        api_url: 'http://localhost:1234/api/product/get-all',
+        api_url: `${import.meta.env.VITE_API_BASE_URL}/product/get-all`,
         query_key: ['all-products'],
         limit: 20,
         stale_time: 600000,
