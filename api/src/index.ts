@@ -1,6 +1,5 @@
 import dns from 'node:dns/promises';
 import dotenv from 'dotenv';
-import serverless from 'serverless-http';
 
 dotenv.config();
 
@@ -43,4 +42,4 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-export const handler = serverless(app);
+export default app;
