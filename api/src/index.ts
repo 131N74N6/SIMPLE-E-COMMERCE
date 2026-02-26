@@ -1,5 +1,6 @@
 import dns from 'node:dns/promises';
 import dotenv from 'dotenv';
+import serverless from 'serverless-http';
 
 dotenv.config();
 
@@ -24,8 +25,9 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
+    credentials: true,
     methods: ['DELETE', 'GET', 'POST', 'PUT'],
-    origin: ["http://localhost:5173", "http://localhost:1234", "https://e-shop-be-beryl.vercel.app"]
+    origin: ["http://localhost:5173", "http://localhost:1234", "https://e-shop-be-beryl.vercel.app"],
 }));
 app.use('/api/auth', authRateLimiter, authRouters);
 app.use('/api/cart', cartRouters)
@@ -41,4 +43,4 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-export default app;
+export const handler = serverless(app);
