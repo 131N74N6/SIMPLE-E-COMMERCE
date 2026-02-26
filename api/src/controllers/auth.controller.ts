@@ -1,10 +1,7 @@
 import { Auth } from "../models/auth.model";
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
-
-dotenv.config();
 
 async function signIn(req: Request, res: Response) {
     const { password, username } = req.body;

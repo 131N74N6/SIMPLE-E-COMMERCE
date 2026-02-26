@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
 import { PurchaseHistory } from '../models/purchase_history.model';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 export async function moveToHistory(req: Request, res: Response) {
     try {

@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
 import { Cart } from '../models/cart.model';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 export async function getSearchedProducts(req: Request, res: Response) {
     try {

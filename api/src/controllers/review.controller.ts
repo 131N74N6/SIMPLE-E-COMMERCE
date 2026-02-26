@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
 import { Review } from '../models/review.model';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 export async function getProductReview(req: Request, res: Response) {
     try {

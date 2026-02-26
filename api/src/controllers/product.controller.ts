@@ -1,13 +1,10 @@
 import { Request, Response } from 'express';
 import { Product } from '../models/product.model';
-import dotenv from 'dotenv';
 import { v2 } from 'cloudinary';
 import { Review } from '../models/review.model';
 import { Cart } from '../models/cart.model';
 import { PurchaseHistory } from '../models/purchase_history.model';
 import { SaleHistory } from '../models/sale_history.model';
-
-dotenv.config();
 
 v2.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
