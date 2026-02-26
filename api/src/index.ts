@@ -20,7 +20,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     methods: ['DELETE', 'GET', 'POST', 'PUT'],
-    origin: ["http://localhost:5173", "http://localhost:1234", "https://api-e-shop.vercel.app"]
+    origin: ["http://localhost:5173", "http://localhost:1234", "https://api-e-shop.vercel.app/api"]
 }));
 app.use('/api/auth', authRateLimiter, authRouters);
 app.use('/api/cart', cartRouters)
