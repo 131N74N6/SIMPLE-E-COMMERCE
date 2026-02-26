@@ -18,7 +18,9 @@ import paymentRouters from "./routes/payment.router";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:1234", "https://api-e-shop.vercel.app"]
+}));
 app.use('/api/auth', authRateLimiter, authRouters);
 app.use('/api/cart', cartRouters)
 app.use('/api/product', productRouters);
