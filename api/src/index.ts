@@ -1,10 +1,10 @@
-import dns from 'node:dns/promises'; // Import modul dns
+// import dns from 'node:dns/promises'; // Import modul dns
 
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
-console.log('DNS servers set to Cloudflare (1.1.1.1) and Google (8.8.8.8)');
+// dns.setServers(["1.1.1.1", "8.8.8.8"]);
+// console.log('DNS servers set to Cloudflare (1.1.1.1) and Google (8.8.8.8)');
 
 import express from "express";
-import { db } from "./database/mongodb";
+// import { db } from "./database/mongodb";
 import cors from "cors";
 import { authRateLimiter } from "./middlewares/auth.middleware";
 import productRouters from "./routes/product.router";
@@ -27,6 +27,8 @@ app.use('/api/review', reviewRouters);
 app.use('/api/purchase-history', purchaseHistoryRouters);
 app.use('/api/sale-history', saleHistoryRouters);
 
-db.then(() => {
-    app.listen(1234, () => console.log('server running at http://localhost:1234'));
-});
+// db.then(() => {
+//     app.listen(1234, () => console.log('server running at http://localhost:1234'));
+// });
+
+export default app;
