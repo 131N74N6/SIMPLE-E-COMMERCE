@@ -41,4 +41,5 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-export default app;
+import serverless from 'serverless-http';
+export const handler = serverless(app);
