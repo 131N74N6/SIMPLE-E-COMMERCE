@@ -3,12 +3,13 @@ import { Navbar1, Navbar2 } from '../components/Navbar';
 import { CustomerProductList } from '../components/ProductList';
 import FilterHandler from '../services/filter.services';
 import type { CustomerProductIntrf } from '../components/ProductCard';
+import Loading from '../components/Loading';
 
 export default function SearchProduct() {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const { searchedProduct } = FilterHandler();
 
-    const { paginatedData, isLoadingMore, isReachedEnd, fetchNextPage } = searchedProduct<CustomerProductIntrf>({
+    const { paginatedData, isLoading, error, isLoadingMore, isReachedEnd, fetchNextPage } = searchedProduct<CustomerProductIntrf>({
         api_url: `${import.meta.env.VITE_API_BASE_URL}/product/search`,
         query_key: [`search-products-${searchQuery}`],
         limit: 20,
@@ -31,7 +32,17 @@ export default function SearchProduct() {
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(event.target.value)}
                     />
                 </form>
-                <CustomerProductList data={paginatedData} loadMore={isLoadingMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage}/>
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <Loading/>
+                    </div>
+                ) : error ? (
+                    <div className="flex justify-center items-center h-full">
+                        <p className="font-medium text-blue-300 text-[0.9rem] text-center">{error.message}</p>
+                    </div> 
+                ) : (
+                    <CustomerProductList data={paginatedData} loadMore={isLoadingMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage}/>
+                )}
             </div>
         </div>
     )

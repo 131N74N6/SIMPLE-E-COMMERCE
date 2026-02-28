@@ -8,7 +8,7 @@ export default function SignUp() {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const { error, setError, signUp, user } = useAuth();
+    const { error, loading, setError, signUp, user } = useAuth();
     const controllerRef = useRef<AbortController | null>(null);
     const navigate = useNavigate();
 
@@ -88,7 +88,8 @@ export default function SignUp() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full mt-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer"
+                        disabled={loading}
+                        className="w-full mt-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Daftar
                     </button>

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Navbar1, Navbar2 } from "../components/Navbar";
 import { useEffect, useRef, useState } from "react";
 import { DataController } from "../services/data.services";
 import useAuth from "../services/auth.services";
@@ -124,10 +123,8 @@ export function AddProduct() {
     
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
-            <Navbar1/>
-            <Navbar2/>
             {message ? <Notification2 message_text={message}/> : null}
-            <form className="flex gap-[1.3rem] md:w-3/4 w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleSubmit}>
+            <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleSubmit}>
                 <input 
                     ref={imageInputRef}
                     type="file" 
@@ -202,13 +199,23 @@ export function AddProduct() {
                         onChange={handleInputChange}
                     />
                 </div>
-                <button 
-                    type="submit" 
-                    disabled={isUploading}
-                    className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-purple-700 transition-colors"
-                >
-                    {isUploading ? 'Uploading...' : 'Tambah Produk'}
-                </button>
+                <div className="grid grid-cols-2 gap-4">
+                    <button 
+                        type="button" 
+                        disabled={isUploading}
+                        onClick={() => navigate(`/your-shop/${currentUserId}`)}
+                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                    >
+                        {isUploading ? 'Uploading...' : 'Kembali'}
+                    </button>
+                    <button 
+                        type="submit" 
+                        disabled={isUploading}
+                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                    >
+                        {isUploading ? 'Uploading...' : 'Tambah Produk'}
+                    </button>
+                </div>
             </form>
         </section>
     );

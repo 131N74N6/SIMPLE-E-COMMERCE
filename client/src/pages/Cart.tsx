@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Notification2 } from '../components/Notification';
 import useAuth from '../services/auth.services';
 import { CustomerInfo } from '../components/CustomerInfo';
+import Loading from '../components/Loading';
 
 declare global {
     interface Window {
@@ -53,7 +54,7 @@ export default function Cart() {
         stale_time: 600000,
     });
 
-    const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
+    const { paginatedData, isLoading, error, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<CartProductIntrf>({
         api_url: `${import.meta.env.VITE_API_BASE_URL}/cart/get/${user_id}`,
         query_key: [`cart-items-${user_id}`],
         limit: 20,
@@ -187,59 +188,69 @@ export default function Cart() {
             <Navbar1/>
             <Navbar2/>
             {message ? <Notification2 message_text={message}/> : null}
-            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
-                <div className='grid grid-cols-2 gap-4'>
-                    <button 
-                        type='button' 
-                        className="bg-orange-400 font-medium text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
-                        disabled={isDeleting} 
-                        onClick={deleteAllProdcuts}
-                    >
-                        Delete All
-                    </button>
-                    <button 
-                        type='button' 
-                        className="bg-orange-400 font-medium text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
-                        disabled={isDeleting || loading} 
-                        onClick={handleCheckout}
-                    >
-                        {loading ? 'Processing...' : 'Check Out'}
-                    </button>
-                    <div>
-                        <div className="text-white font-bold">Total Products: {cartStats ? cartStats.product_total : 0}</div>
-                        <div className="text-white font-bold">Total Price: IDR {cartStats ? cartStats.price_total : 0}</div>
+            {isLoading ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <Loading/>
+                </div>
+            ) : error ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <p className="font-medium text-blue-300 text-[0.9rem] text-center">{error.message}</p>
+                </div> 
+            ) : (
+                <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
+                    <div className='grid grid-cols-2 gap-4'>
+                        <button 
+                            type='button' 
+                            className="bg-orange-400 font-medium text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
+                            disabled={isDeleting} 
+                            onClick={deleteAllProdcuts}
+                        >
+                            Delete All
+                        </button>
+                        <button 
+                            type='button' 
+                            className="bg-orange-400 font-medium text-black font-400 text-[0.9rem] p-[0.4rem] rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-500 cursor-pointer" 
+                            disabled={isDeleting || loading} 
+                            onClick={handleCheckout}
+                        >
+                            {loading ? 'Processing...' : 'Check Out'}
+                        </button>
+                        <div>
+                            <div className="text-white font-bold">Total Products: {cartStats ? cartStats.product_total : 0}</div>
+                            <div className="text-white font-bold">Total Price: IDR {cartStats ? cartStats.price_total : 0}</div>
+                        </div>
+                    </div>
+                    <div className='overflow-y-auto flex flex-col gap-4'>
+                        <CartProductList 
+                            data={paginatedData} 
+                            loadMore={isLoadMore} 
+                            isReachedEnd={isReachedEnd} 
+                            isUpdating={isUpdating}
+                            selectedId={selectedId} 
+                            setSize={fetchNextPage} 
+                            onRemove={deleteOneProduct} 
+                            onSelect={handleSelect}
+                            onUpdate={handleUpdateTotal}
+                        />
+                        <CustomerInfo
+                            customer_firstname={customerData.customer_firstname}
+                            customer_lastname={customerData.customer_lastname}
+                            customer_phone={customerData.customer_phone}
+                            customer_address={customerData.customer_address}
+                            customer_city={customerData.customer_city}
+                            customer_postal_code={customerData.customer_postal_code}
+                            customer_country_code={customerData.customer_country_code}
+                            handleFirstnameChange={handleInputChange}
+                            handleLastnameChange={handleInputChange}
+                            handlePhoneChange={handleInputChange}
+                            handleAddressChange={handleInputChange}
+                            handleCityChange={handleInputChange}
+                            handlePostalCodeChange={handleInputChange}
+                            handleCountryCodeChange={handleInputChange}
+                        />
                     </div>
                 </div>
-                <div className='overflow-y-auto flex flex-col gap-4'>
-                    <CartProductList 
-                        data={paginatedData} 
-                        loadMore={isLoadMore} 
-                        isReachedEnd={isReachedEnd} 
-                        isUpdating={isUpdating}
-                        selectedId={selectedId} 
-                        setSize={fetchNextPage} 
-                        onRemove={deleteOneProduct} 
-                        onSelect={handleSelect}
-                        onUpdate={handleUpdateTotal}
-                    />
-                    <CustomerInfo
-                        customer_firstname={customerData.customer_firstname}
-                        customer_lastname={customerData.customer_lastname}
-                        customer_phone={customerData.customer_phone}
-                        customer_address={customerData.customer_address}
-                        customer_city={customerData.customer_city}
-                        customer_postal_code={customerData.customer_postal_code}
-                        customer_country_code={customerData.customer_country_code}
-                        handleFirstnameChange={handleInputChange}
-                        handleLastnameChange={handleInputChange}
-                        handlePhoneChange={handleInputChange}
-                        handleAddressChange={handleInputChange}
-                        handleCityChange={handleInputChange}
-                        handlePostalCodeChange={handleInputChange}
-                        handleCountryCodeChange={handleInputChange}
-                    />
-                </div>
-            </div>
+            )}
         </div>
     );
 }

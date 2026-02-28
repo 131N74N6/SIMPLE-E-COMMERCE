@@ -6,6 +6,7 @@ import { ListPlus } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import ImageSlider from "../components/ImageSlider";
+import Loading from "../components/Loading";
 
 export type ProductDetailIntrf = {
     _id: string;
@@ -56,7 +57,7 @@ export function ProductDetail() {
     const queryClient = useQueryClient();
     const currentUserId = user ? user.info.id : '';
     
-    const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
+    const { data: selectedProduct, isLoading, error } = getData<ProductDetailIntrf[]>({
         api_url: `${import.meta.env.VITE_API_BASE_URL}/product/detail/${_id}`,
         query_key: [`product-details-${_id}`],
         stale_time: 600000
@@ -136,70 +137,80 @@ export function ProductDetail() {
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
             <Navbar2/>
-            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full overflow-y-auto">
-                <div className="flex md:flex-row flex-col md:items-center md:justify-between gap-4">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white">
-                            {selectedProduct?.[0]?.username.charAt(0)}
+            {isLoading ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <Loading/>
+                </div>
+            ) : error ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <p className="font-medium text-blue-300 text-[0.9rem] text-center">{error.message}</p>
+                </div> 
+            ) : (
+                <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full overflow-y-auto">
+                    <div className="flex md:flex-row flex-col md:items-center md:justify-between gap-4">
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white">
+                                {selectedProduct?.[0]?.username.charAt(0)}
+                            </div>
+                            <div>
+                                <Link to={`/your-shop/${selectedProduct?.[0]?.user_id}`} className="font-semibold text-white hover:underline">
+                                    {selectedProduct?.[0]?.username}
+                                </Link>
+                                <p className="text-gray-400 text-sm">
+                                    {selectedProduct && new Date(selectedProduct?.[0]?.created_at).toLocaleString()}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <Link to={`/your-shop/${selectedProduct?.[0]?.user_id}`} className="font-semibold text-white hover:underline">
-                                {selectedProduct?.[0]?.username}
-                            </Link>
-                            <p className="text-gray-400 text-sm">
-                                {selectedProduct && new Date(selectedProduct?.[0]?.created_at).toLocaleString()}
-                            </p>
-                        </div>
+                        
+                        {isPostOwner ? (
+                            null
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={handleAddToCart}
+                                disabled={isProcessing || isProductInCart}
+                                className="bg-orange-400 flex gap-2 items-center cursor-pointer hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium"
+                            >
+                                <ListPlus color="black" className="mr-1"/>
+                                {isProductInCart ? 'In Cart' : 'Add to Cart'}
+                            </button>
+                        )}
                     </div>
                     
-                    {isPostOwner ? (
-                        null
-                    ) : (
-                        <button
-                            type="button"
-                            onClick={handleAddToCart}
-                            disabled={isProcessing || isProductInCart}
-                            className="bg-orange-400 flex gap-2 items-center cursor-pointer hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium"
-                        >
-                            <ListPlus color="black" className="mr-1"/>
-                            {isProductInCart ? 'In Cart' : 'Add to Cart'}
-                        </button>
-                    )}
+                    <div className="flex flex-col gap-4">
+                        {selectedProduct && selectedProduct[0] && selectedProduct[0].product_images && selectedProduct[0].product_images.length > 0 ? <ImageSlider images={selectedProduct[0].product_images} /> : null}
+                        <div className="text-xl font-bold text-gray-200">{selectedProduct?.[0]?.product_name}</div>
+                        <div className="text-gray-200">{selectedProduct?.[0]?.product_description}</div>
+                        <div className="text-gray-200">IDR {selectedProduct?.[0]?.product_price}</div>
+                        <div className="text-gray-200">Stock: {selectedProduct?.[0]?.product_stock}</div>
+                        <form onSubmit={submitReview}>
+                            <textarea
+                                className="w-full p-2 rounded-lg border-blue-300 border resize-none outline-0 text-gray-200 font-medium"
+                                placeholder="Leave a comment..."
+                                rows={6}
+                                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setComment(event.target.value)}
+                            />
+                            <div className="grid grid-cols-2 gap-2">
+                                <button 
+                                    type="submit" 
+                                    disabled={isUploading}
+                                    className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
+                                >
+                                    Submit Comment
+                                </button>
+                                <button 
+                                    type="button" 
+                                    disabled={isUploading}
+                                    onClick={() => navigate(`/reviews/${_id}`)}
+                                    className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
+                                >
+                                    View Reviews
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                
-                <div className="flex flex-col gap-4">
-                    {selectedProduct && selectedProduct[0] && selectedProduct[0].product_images && selectedProduct[0].product_images.length > 0 ? <ImageSlider images={selectedProduct[0].product_images} /> : null}
-                    <div className="text-xl font-bold text-gray-200">{selectedProduct?.[0]?.product_name}</div>
-                    <div className="text-gray-200">{selectedProduct?.[0]?.product_description}</div>
-                    <div className="text-gray-200">IDR {selectedProduct?.[0]?.product_price}</div>
-                    <div className="text-gray-200">Stock: {selectedProduct?.[0]?.product_stock}</div>
-                    <form onSubmit={submitReview}>
-                        <textarea
-                            className="w-full p-2 rounded-lg border-blue-300 border resize-none outline-0 text-gray-200 font-medium"
-                            placeholder="Leave a comment..."
-                            rows={6}
-                            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => setComment(event.target.value)}
-                        />
-                        <div className="grid grid-cols-2 gap-2">
-                            <button 
-                                type="submit" 
-                                disabled={isUploading}
-                                className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
-                            >
-                                Submit Comment
-                            </button>
-                            <button 
-                                type="button" 
-                                disabled={isUploading}
-                                onClick={() => navigate(`/reviews/${_id}`)}
-                                className="mt-2 cursor-pointer bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-blue-500 text-blue-950 font-medium py-2 px-4 rounded-lg"
-                            >
-                                View Reviews
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            )}
         </section>
     )
 }

@@ -8,7 +8,7 @@ export default function SignIn() {
     const [password, setPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { error, setError, signIn, user } = useAuth();
+    const { error, loading, setError, signIn, user } = useAuth();
     const controllerRef = useRef<AbortController | null>(null);
 
     useEffect(() => {
@@ -78,7 +78,8 @@ export default function SignIn() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full mt-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer"
+                        disabled={loading}
+                        className="w-full mt-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition cursor-pointer"
                     >
                         Masuk
                     </button>

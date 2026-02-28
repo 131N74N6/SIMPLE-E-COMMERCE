@@ -6,6 +6,7 @@ import { DataController } from '../services/data.services';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import useAuth from '../services/auth.services';
+import Loading from '../components/Loading';
 
 export default function YourShop() {
     const { user_id } = useParams();
@@ -15,7 +16,7 @@ export default function YourShop() {
 
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
     
-    const { paginatedData, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<SellerProductIntrf>({
+    const { paginatedData, isLoading, error, isLoadMore, isReachedEnd, fetchNextPage } = infiniteScroll<SellerProductIntrf>({
         api_url: `${import.meta.env.VITE_API_BASE_URL}/product/owner/${user_id}`,
         query_key: [`your-products-${user_id}`],
         limit: 20,
@@ -56,26 +57,36 @@ export default function YourShop() {
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
             <Navbar2/>
-            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col pt-4 px-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
-                {isShopOwner ? (
-                    <button 
-                        type='button' 
-                        className=" font-medium bg-orange-400 text-black font-400 text-[0.9rem] p-[0.4rem] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-orange-500" 
-                        disabled={isDeleting} 
-                        onClick={deleteAllProdcuts}
-                    >
-                        Delete All
-                    </button>
-                ) : null}
-                <SellerProductList 
-                    data={paginatedData} 
-                    loadMore={isLoadMore} 
-                    isShopOwner={isShopOwner}
-                    isReachedEnd={isReachedEnd} 
-                    setSize={fetchNextPage} 
-                    onDelete={deleteOneProduct}
-                />
-            </div>
+            {isLoading ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <Loading/>
+                </div>
+            ) : error ? (
+                <div className="flex justify-center items-center h-full w-full md:w-3/4 bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <p className="font-medium text-blue-300 text-[0.9rem] text-center">{error.message}</p>
+                </div> 
+            ) : (
+                <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col pt-4 px-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
+                    {isShopOwner ? (
+                        <button 
+                            type='button' 
+                            className=" font-medium bg-orange-400 text-black font-400 text-[0.9rem] p-[0.4rem] disabled:cursor-not-allowed disabled:opacity-50 hover:bg-orange-500" 
+                            disabled={isDeleting} 
+                            onClick={deleteAllProdcuts}
+                        >
+                            Delete All
+                        </button>
+                    ) : null}
+                    <SellerProductList 
+                        data={paginatedData} 
+                        loadMore={isLoadMore} 
+                        isShopOwner={isShopOwner}
+                        isReachedEnd={isReachedEnd} 
+                        setSize={fetchNextPage} 
+                        onDelete={deleteOneProduct}
+                    />
+                </div>
+            )}
         </div>
     );
 }

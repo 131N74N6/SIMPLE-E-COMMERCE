@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ProductDetailIntrf } from "./ProductDetail";
 import { useEffect, useRef, useState } from "react";
 import useAuth from "../services/auth.services";
-import { Navbar1, Navbar2 } from "../components/Navbar";
 import type { MediaFile } from "./AddProduct";
 import { uploadToCloudinary } from "../services/cloudinary.services";
 import { X } from "lucide-react";
@@ -141,10 +140,8 @@ export default function EditProduct() {
 
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
-            <Navbar1/>
-            <Navbar2/>
             {message ? <Notification2 message_text={message}/> : null}
-            <form className="flex gap-[1.3rem] md:w-3/4 w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleUpdateSubmit}>
+            <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleUpdateSubmit}>
                 <input 
                     ref={imageInputRef}
                     type="file" 
@@ -243,14 +240,14 @@ export default function EditProduct() {
                         type="button"
                         disabled={isDataChanging}
                         onClick={() => navigate(`/your-shop/${currentUserId}`)} 
-                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
                     >
                         {isDataChanging ? 'Updating...' : 'Kembali'}
                     </button>
                     <button 
                         type="submit" 
                         disabled={isDataChanging}
-                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition-colors"
+                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
                     >
                         {isDataChanging ? 'Updating...' : 'Edit Produk'}
                     </button>
