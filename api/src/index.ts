@@ -31,7 +31,12 @@ v2.config({
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:1234", "https://e-shop-be-chi.vercel.app/"],
+    origin: [
+        "http://localhost:5173", 
+        "http://localhost:1234", 
+        "https://e-shop-be-chi.vercel.app/", 
+        "https://e-shop-jade-sigma.vercel.app/"
+    ],
     credentials: true,
 }));
 app.use('/api/auth', authRateLimiter, authRouters);
