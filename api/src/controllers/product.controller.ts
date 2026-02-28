@@ -6,12 +6,6 @@ import { Cart } from '../models/cart.model';
 import { PurchaseHistory } from '../models/purchase_history.model';
 import { SaleHistory } from '../models/sale_history.model';
 
-v2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
 export async function getAllProducts(req: Request, res: Response) {
     try {
         const page = parseInt(req.query.page as string) || 1;

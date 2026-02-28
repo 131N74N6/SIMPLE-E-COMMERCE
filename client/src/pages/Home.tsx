@@ -17,7 +17,7 @@ export default function Home() {
         <div className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             <Navbar1/>
             <Navbar2/>
-            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col p-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
+            <div className="bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 flex flex-col pt-4 px-4 gap-4 md:w-3/4 h-full min-h-50 w-full">
                 <CustomerProductList data={paginatedData} loadMore={isLoadMore} isReachedEnd={isReachedEnd} setSize={fetchNextPage}/>
             </div>
         </div>

@@ -26,6 +26,7 @@ export function CustomerInfo(props: propsIntrf) {
                         placeholder='firstname'
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_firstname" 
+                        id="customer_firstname"
                         value={props.customer_firstname}
                         onChange={props.handleFirstnameChange}
                     />
@@ -37,6 +38,7 @@ export function CustomerInfo(props: propsIntrf) {
                         placeholder='lastname'
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_lastname" 
+                        id="customer_lastname"
                         value={props.customer_lastname}
                         onChange={props.handleLastnameChange}
                     />
@@ -46,6 +48,7 @@ export function CustomerInfo(props: propsIntrf) {
                     <input 
                         type="text" 
                         placeholder='phone number'
+                        id="customer_phone"
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_phone" 
                         value={props.customer_phone}
@@ -57,6 +60,7 @@ export function CustomerInfo(props: propsIntrf) {
                     <input 
                         type="text" 
                         placeholder='address'
+                        id="customer_address"
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_address" 
                         value={props.customer_address}
@@ -67,6 +71,7 @@ export function CustomerInfo(props: propsIntrf) {
                     <label htmlFor="customer_city" className='text-blue-300 font-medium text-[0.9rem]'>City</label>
                     <input 
                         type="text" 
+                        id="customer_city"
                         placeholder='city'
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_city" 
@@ -78,6 +83,7 @@ export function CustomerInfo(props: propsIntrf) {
                     <label htmlFor="customer_postal_code" className='text-blue-300 font-medium text-[0.9rem]'>Postal Code</label>
                     <input 
                         type="text" 
+                        id="customer_postal_code"
                         placeholder='postal_code'
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_postal_code" 
@@ -89,6 +95,7 @@ export function CustomerInfo(props: propsIntrf) {
                     <label htmlFor="customer_country_code" className='text-blue-300 font-medium text-[0.9rem]'>Country Code</label>
                     <input 
                         type="text" 
+                        id="customer_country_code"
                         placeholder='country_code'
                         className='border border-blue-300 text-blue-300 text-[0.9rem] p-[0.45rem] outline-0 rounded font-medium'
                         name="customer_country_code" 
