@@ -2,14 +2,21 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/main.ts",
+            "src": "dist/index.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/api/main.ts"
+            "dest": "dist/index.js",
+            "methods": ["DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"],
+            "headers": {
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "DELETE, GET, OPTIONS, PATCH, POST, PUT",
+                "Access-Control-Allow-Headers": "Accept, Accept-Version, Authorization, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-CSRF-Token, X-Requested-With"
+            }
         }
     ]
 }
