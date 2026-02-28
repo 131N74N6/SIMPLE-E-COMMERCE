@@ -22,10 +22,15 @@ export async function getAllProducts(req: Request, res: Response) {
             {}, 
             { _id: 1, product_name: 1, product_images: 1, product_price: 1 }
         ).limit(limit).skip(skip).sort({ created_at: 1 });
-        
+
+        console.log(`Found ${allPost.length} products`);
         res.json(allPost);
-    } catch (error) {
-        res.status(500).json({ message: 'internal server error' });
+    } catch (error: any) {
+        console.error('❌ getAllProducts ERROR:', error.message, error.stack); // ← Ini akan muncul di Vercel Logs
+        res.status(500).json({ 
+            message: 'internal server error',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 }
 
