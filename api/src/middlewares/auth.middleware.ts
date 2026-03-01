@@ -34,7 +34,7 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
         return;
     }
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODE4Y2RlZjFjMjdkZGE3ZDQxMzQ2MyIsInVzZXJuYW1lIjoiYmludGFuZyJ9.2CYKkbNWb3IeEJtv2sMlO3Q1fJIuflYiE60nLDQXc-c', (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY || 'super-secret-jwt-key-for-e-shop-2025', (err, decoded) => {
         if (err) {
             res.status(403).json({ message: 'Invalid access token' });
             return;
