@@ -124,7 +124,7 @@ export function AddProduct() {
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             {message ? <Notification2 message_text={message}/> : null}
-            <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleSubmit}>
+            <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 h-full" onSubmit={handleSubmit}>
                 <input 
                     ref={imageInputRef}
                     type="file" 
@@ -135,15 +135,15 @@ export function AddProduct() {
                     id="media-upload"
                 />
                 <section 
-                    className="border-dashed h-screen p-4 cursor-pointer border-2 border-purple-400 rounded-lg overflow-x-auto flex flex-col items-center justify-center"
+                    className="border-dashed h-screen p-4 cursor-pointer border-2 border-purple-400 rounded-lg"
                     onClick={() => imageInputRef.current?.click()}
                 >
                     {mediaFiles.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center text-purple-400">
+                        <div className="flex flex-col items-center h-full justify-center text-purple-400">
                             <span className="text-lg">Click to select images or videos</span>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-h-75 overflow-y-auto">
                             {mediaFiles.map((media, index) => (
                                 <div key={index} className="relative group">
                                     <img 

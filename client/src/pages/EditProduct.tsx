@@ -8,6 +8,7 @@ import type { MediaFile } from "./AddProduct";
 import { uploadToCloudinary } from "../services/cloudinary.services";
 import { X } from "lucide-react";
 import { Notification2 } from "../components/Notification";
+import Loading from "../components/Loading";
 
 export default function EditProduct() {
     const productFolder = 'products_shop';
@@ -17,7 +18,7 @@ export default function EditProduct() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
-    const { data: selectedProduct } = getData<ProductDetailIntrf[]>({
+    const { data: selectedProduct, isLoading, error } = getData<ProductDetailIntrf[]>({
         api_url: `${import.meta.env.VITE_API_BASE_URL}/product/detail/${_id}`,
         query_key: [`edit-product-details-${_id}`],
         stale_time: 600000
@@ -131,7 +132,7 @@ export default function EditProduct() {
                 product_stock: selectedProduct[0].product_stock.toString()
             });
         }
-    }, [selectedProduct, navigate]);
+    }, [selectedProduct, _id, navigate]);
 
     function handleUpdateSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -141,118 +142,128 @@ export default function EditProduct() {
     return (
         <section className="flex gap-4 md:flex-row flex-col bg-gray-800 p-4 h-screen">
             {message ? <Notification2 message_text={message}/> : null}
-            <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 overflow-y-auto" onSubmit={handleUpdateSubmit}>
-                <input 
-                    ref={imageInputRef}
-                    type="file" 
-                    className="hidden" 
-                    onChange={imageSelectorHandler}
-                    multiple 
-                    accept="image/*,video/*"
-                    id="media-upload"
-                />
-                <section 
-                    className="border-dashed h-screen p-4 cursor-pointer border-2 border-blue-400 rounded-lg overflow-x-auto flex flex-col items-center justify-center"
-                    onClick={() => imageInputRef.current?.click()}
-                >
-                    {mediaFiles.length === 0 && existingImages.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center text-blue-400">
-                            <span className="text-lg">Click to select images</span>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-h-75 overflow-y-auto">
-                            {existingImages.map((image, index) => (
-                                <div key={index} className="relative group">
-                                    <img 
-                                        src={image.file_url} 
-                                        alt={`Existing ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-lg"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                                            e.stopPropagation();
-                                            removeExistingImage(image.public_id);
-                                        }}
-                                        className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <X size={14} color="white"/>
-                                    </button>
-                                </div>
-                            ))}
-                            {mediaFiles.map((media, index) => (
-                                <div key={index} className="relative group">
-                                    <img 
-                                        src={media.previewUrl} 
-                                        alt={`Preview ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-lg"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                                            e.stopPropagation();
-                                            removeNewMediaFile(index);
-                                        }}
-                                        className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <X size={14} color="white"/>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </section>
-                <textarea 
-                    placeholder="Add description..." 
-                    name="product_description"
-                    value={editProduct.product_description}
-                    onChange={handleInputChange}
-                    className="p-[0.8rem] h-screen text-white bg-blue-900/20 backdrop-blur-lg outline-0 border border-blue-400 rounded-lg text-[0.9rem] font-[550] resize-none"
-                ></textarea>
-                <div className="grid grid-cols-3 gap-4">
-                    <input 
-                        type="text" 
-                        name="product_name"
-                        placeholder="product name"
-                        className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        value={editProduct.product_name} 
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="text" 
-                        name="product_price"
-                        placeholder="product price" 
-                        value={editProduct.product_price} 
-                        className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        onChange={handleInputChange}
-                    />
-                    <input 
-                        type="text" 
-                        name="product_stock"
-                        placeholder="product stock" 
-                        value={editProduct.product_stock} 
-                        className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
-                        onChange={handleInputChange}
-                    />
+            {isLoading ? (
+                <div className="flex justify-center items-center h-full w-full bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <Loading/>
                 </div>
-                <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
-                    <button
-                        type="button"
-                        disabled={isDataChanging}
-                        onClick={() => navigate(`/your-shop/${currentUserId}`)} 
-                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+            ) : error ? (
+                <div className="flex justify-center items-center h-full w-full bg-blue-900/20 backdrop-blur-lg rounded-xl border border-blue-400 ">
+                    <p className="font-medium text-blue-300 text-[0.9rem] text-center">{error.message}</p>
+                </div> 
+            ) : (
+                <form className="flex gap-[1.3rem] w-full p-4 flex-col bg-blue-900/20 backdrop-blur-lg rounded-lg border border-blue-400 h-full" onSubmit={handleUpdateSubmit}>
+                    <input 
+                        ref={imageInputRef}
+                        type="file" 
+                        className="hidden" 
+                        onChange={imageSelectorHandler}
+                        multiple 
+                        accept="image/*,video/*"
+                        id="media-upload"
+                    />
+                    <section 
+                        className="border-dashed h-screen p-4 cursor-pointer border-2 border-blue-400 rounded-lg"
+                        onClick={() => imageInputRef.current?.click()}
                     >
-                        {isDataChanging ? 'Updating...' : 'Kembali'}
-                    </button>
-                    <button 
-                        type="submit" 
-                        disabled={isDataChanging}
-                        className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
-                    >
-                        {isDataChanging ? 'Updating...' : 'Edit Produk'}
-                    </button>
-                </div>
-            </form>
+                        {mediaFiles.length === 0 && existingImages.length === 0 ? (
+                            <div className="flex flex-col items-center h-full justify-center text-blue-400">
+                                <span className="text-lg">Click to select images</span>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-h-75 overflow-y-auto">
+                                {existingImages.map((image, index) => (
+                                    <div key={index} className="relative group">
+                                        <img 
+                                            src={image.file_url} 
+                                            alt={`Existing ${index + 1}`}
+                                            className="w-full h-32 object-cover rounded-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                                                e.stopPropagation();
+                                                removeExistingImage(image.public_id);
+                                            }}
+                                            className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X size={14} color="white"/>
+                                        </button>
+                                    </div>
+                                ))}
+                                {mediaFiles.map((media, index) => (
+                                    <div key={index} className="relative group">
+                                        <img 
+                                            src={media.previewUrl} 
+                                            alt={`Preview ${index + 1}`}
+                                            className="w-full h-32 object-cover rounded-lg"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                                                e.stopPropagation();
+                                                removeNewMediaFile(index);
+                                            }}
+                                            className="cursor-pointer absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <X size={14} color="white"/>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                    <textarea 
+                        placeholder="Add description..." 
+                        name="product_description"
+                        value={editProduct.product_description}
+                        onChange={handleInputChange}
+                        className="p-[0.8rem] h-screen text-white bg-blue-900/20 backdrop-blur-lg outline-0 border border-blue-400 rounded-lg text-[0.9rem] font-[550] resize-none"
+                    ></textarea>
+                    <div className="grid grid-cols-3 gap-4">
+                        <input 
+                            type="text" 
+                            name="product_name"
+                            placeholder="product name"
+                            className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
+                            value={editProduct.product_name} 
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="text" 
+                            name="product_price"
+                            placeholder="product price" 
+                            value={editProduct.product_price} 
+                            className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
+                            onChange={handleInputChange}
+                        />
+                        <input 
+                            type="text" 
+                            name="product_stock"
+                            placeholder="product stock" 
+                            value={editProduct.product_stock} 
+                            className="border-blue-300 text-blue-300 p-[0.4rem] text-[0.9rem] outline-0 border"
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
+                        <button
+                            type="button"
+                            disabled={isDataChanging}
+                            onClick={() => navigate(`/your-shop/${currentUserId}`)} 
+                            className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                        >
+                            {isDataChanging ? 'Updating...' : 'Kembali'}
+                        </button>
+                        <button 
+                            type="submit" 
+                            disabled={isDataChanging}
+                            className="text-[0.9rem] p-[0.8rem] rounded-lg font-[550] cursor-pointer bg-blue-400 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-colors"
+                        >
+                            {isDataChanging ? 'Updating...' : 'Edit Produk'}
+                        </button>
+                    </div>
+                </form>
+            )}
         </section>
     );
 }
